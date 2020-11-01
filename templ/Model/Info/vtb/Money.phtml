@@ -1,0 +1,54 @@
+<?php
+    $selCurrency = $info->currency>0?$info->currency:1;
+?>
+
+<div class="bm-form-line">
+    <?=$info->text?>
+</div>
+<div class="bm-form-line">
+    <!-- Группа элементов для "суммы требования"-->
+    <div class="bm-form-amount">
+        <div class="bm-form-amount-row">
+            <div class="bm-form-amount-cell bm-form-amount-cell--input">
+                <div class="bm-form-input <?=$info->hasError?'has-error':''?>">
+                    <label class="bm-form-input-label" for="bm-form-input-<?=$info->extId?>">Сумма</label>
+                    <div class="bm-form-input-area">
+                        <input class="bm-form-input-field <?=$info->jsMask?>" type="text" name="<?=$inGroup?"info[{$info->extId}][amount]":'data[amount]'?>" id="bm-form-input-<?=$info->extId?>" placeholder="<?=htmlspecialchars($info->placeholder)?>" value="<?=$info->amountText?>">
+                        <div class="bm-form-input-status bm-form-input-status--has-error">
+                            <div class="bm-form-input-status-figure">
+                                <svg class="icon icon--bm-form-close  bm-form-input-status-icon" role="img">
+                                    <use xlink:href="#icon_bm-form-close"></use>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="bm-form-input-status bm-form-input-status--is-filled">
+                            <div class="bm-form-input-status-figure">
+                                <svg class="icon icon--bm-form-check  bm-form-input-status-icon" role="img">
+                                    <use xlink:href="#icon_bm-form-check"></use>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bm-form-input-error"><?=$info->errorMessage?></div>
+                </div>
+            </div>
+            <div class="bm-form-amount-cell bm-form-amount-cell--switcher">
+                <div class="bm-form-currencies">
+                    <label class="bm-form-currencies-label">Валюта</label>
+                    <div class="bm-form-currencies-group">
+                        <?php foreach ($info->currencies as $key=>$currency): ?>
+                            <div class="bm-form-currency">
+                                <input class="bm-form-currency-field" type="radio" id="bm-form-show-currency-<?=$info->extId?>-<?=$key?>" name="<?=$inGroup?"info[{$info->extId}][currency]":'data[currency]'?>" value="<?=$key?>" <?=$selCurrency==$key?'checked':''?>>
+                                <label class="bm-form-currency-label" for="bm-form-show-currency-<?=$info->extId?>-<?=$key?>"><?=$currency['symbol']?></label>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<?php if (!$inGroup) require __DIR__.'/button-group.php'; ?>

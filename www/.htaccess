@@ -1,0 +1,25 @@
+AddDefaultCharset UTF-8
+
+php_value upload_max_filesize 20M
+php_value post_max_size 20M
+php_value max_input_vars 2000
+php_value short_open_tag Off
+
+RewriteEngine on
+RewriteBase /
+
+RewriteCond %{REQUEST_URI} ^/fcache/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule .* fcache.php?uri=%{REQUEST_URI} [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule .* index.php
+
+
+<If "%{REQUEST_URI} =~ m#/logs#">
+    AuthType Basic
+    AuthName Admin
+
+    AuthUserFile /usr/local/www/hosting/riskover/.htpass
+    Require user jeka dima
+</If>

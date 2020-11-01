@@ -1,0 +1,48 @@
+<div class="row-fluid">
+    <div class="span8">
+        <h3>Пользовательские сессии</h3>
+
+        <div class="accordion" id="dirlist">
+            <?php foreach ($dirs as $key=>$dir): ?>
+            <div class="accordion-group">
+                <div class="accordion-heading">
+                    <div class="row-fluid">
+                        <div class="span10">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#dirlist" data-target="#collapse-<?=$key?>"><?=$key?></a>
+                        </div>
+                        <div class="span2">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#dirlist" data-target="#collapse-<?=$key?>"">сессий: <?=$dir['count']?></a>
+                        </div>
+                    </div>
+                </div>
+                <div id="collapse-<?=$dir['dir']?>" class="accordion-body collapse">
+                   <table class="table table-hover" style="margin-bottom: 0px;">
+                       <?php foreach ($dir['files'] as $file): ?>
+                       <tr class="<?php if ($file['error']): ?>error<?php else: ?><?=$file['complete']?'success':''?><?php endif; ?>">
+                           <td style="padding-left: 20px; width: 5%; white-space: nowrap; font-size: 13px;"><?=$file['time']?></td>
+                           <td style="padding-left: 20px;">
+                               <a href="/logs/file?dir=<?=$dir['dir']?>&name=<?=$file['name']?>" target="_blank" style="width: 100%; height: 100%; display: block; text-decoration: none; color: #000000;">Файл: <?=$file['name']?></a>
+                           </td>
+                           <td style="width: 5%; white-space: nowrap">
+                               <?php if ($file['error']): ?>
+                                    <i class="icon-warning-sign"></i>
+                               <?php else: ?>
+                                    <?php if ($file['complete']): ?><i class="icon-ok"></i><?php endif; ?>
+                               <?php endif;?>
+                           </td>
+                           <td style="width: 10%; white-space: nowrap">Шагов: <?=$file['steps']?></td>
+                       </tr>
+                       <?php endforeach; ?>
+                   </table>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+
+    </div>
+    <div class="span4">
+        <div>
+
+        </div>
+    </div>
+</div>

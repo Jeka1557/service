@@ -1,0 +1,8 @@
+<div class="row justify-content-center mt-5">
+    <img src="/img/file-earmark.svg" class="img-fluid col-3 col-sm-3 col-md-2 col-lg-1">
+</div>
+<div class="text-center mt-4">
+    <?php if (!$message->isEmpty('textHeader')): ?><h4 class="mt-0"><?=$message->textHeader?></h4><?php endif; ?>
+    <p><?=$message->text?></p>
+    <p><a href="#" class="btn btn-primary">Загрузить</a></p>
+</div>

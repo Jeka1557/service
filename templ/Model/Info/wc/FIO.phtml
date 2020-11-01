@@ -1,0 +1,24 @@
+
+<h5><?=$info->text?></h5>
+
+<div class="form-row">
+    <div class="col-4 form-group">
+        <input type="text" class="form-control js-mask-word <?=$info->hasErrorSurname?'is-invalid':''?>" name="<?=$inGroup?"info[{$info->extId}][surname]":'data[surname]'?>" value="<?=$info->dataSurname?>"  placeholder="<?=$info->placeholder['surname']?>" >
+        <?php if ($info->hasErrorSurname): ?><div class="invalid-feedback"><?=$info->errorMessageSurname?></div><?php endif; ?>
+    </div>
+    <div class="col form-group">
+        <input type="text" class="form-control js-mask-word <?=$info->hasErrorName?'is-invalid':''?>" name="<?=$inGroup?"info[{$info->extId}][name]":'data[name]'?>" value="<?=$info->dataName?>" placeholder="<?=$info->placeholder['name']?>" >
+        <?php if ($info->hasErrorName): ?><div class="invalid-feedback"><?=$info->errorMessageName?></div><?php endif; ?>
+    </div>
+    <div class="col form-group">
+        <input type="text" class="form-control js-mask-word <?=$info->hasErrorPatronymic?'is-invalid':''?>" name="<?=$inGroup?"info[{$info->extId}][patronymic]":'data[patronymic]'?>" value="<?=$info->dataPatronymic?>" placeholder="<?=$info->placeholder['patronymic']?>" >
+        <?php if ($info->hasErrorPatronymic): ?><div class="invalid-feedback"><?=$info->errorMessagePatronymic?></div><?php endif; ?>
+    </div>
+</div>
+
+<?php if (!$inGroup): ?>
+<div class="mt-3">
+    <?php require __DIR__.'/button-group.php'; ?>
+</div>
+<input type="hidden" name="info_id" value="<?=$info->extId?>">
+<?php endif; ?>

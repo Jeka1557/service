@@ -1,0 +1,78 @@
+<?php
+/** @var  Model\Question\Common $question */
+$selAnswerId = $question->getSelectedAnswerId();
+?>
+<?php if($question->listView): ?>
+    <h5><?=$question->text?></h5>
+
+    <div id="qst-ans-block-<?=$question->extId?>">
+        <select class="form-control js-select" autocomplete="off" id="qst-ans-block-<?=$question->extId?>" name="answer_id" >
+            <?php $i=0; foreach ($question->answers as $answer): ?>
+                <option value="<?=$answer->id?>" <?=$answer->id==$selAnswerId?'selected':''?> ><?=$answer->text?></option>
+                <?php $i++; endforeach; ?>
+        </select>
+    </div>
+
+    <div class="mt-3">
+        <?php if (!$question->isEmpty('answerId')): ?>
+            <button  type="submit" class="btn btn-light" id="qst-chg-btn-<?=$question->extId?>">Изменить</button>
+        <?php else: ?>
+            <button  type="submit" class="btn btn-primary">Ответить</button>
+        <?php endif; ?>
+    </div>
+
+    <input type="hidden" name="question_id" value="<?=$question->extId?>">
+
+<?php else: ?>
+<h5><?=$question->text?></h5>
+
+<div id="qst-ans-block-<?=$question->extId?>">
+    <?php $i=0; foreach ($question->answers as $answer): ?>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="answer_id" value="<?=$answer->id?>" id="qst-ans-<?=$question->extId?>-<?=$answer->id?>"  <?=$answer->id==$selAnswerId?'checked':''?> >
+            <label class="form-check-label" for="qst-ans-<?=$question->extId?>-<?=$answer->id?>">
+                <?=$answer->text?>
+            </label>
+        </div>
+    <?php $i++; endforeach; ?>
+</div>
+
+<div class="mt-3">
+    <?php if (!$question->isEmpty('answerId')): ?>
+        <button  type="submit" class="btn btn-light" id="qst-chg-btn-<?=$question->extId?>">Изменить</button>
+    <?php else: ?>
+        <button  type="submit" class="btn btn-primary">Ответить</button>
+    <?php endif; ?>
+</div>
+
+<input type="hidden" name="question_id" value="<?=$question->extId?>">
+
+<script>
+    (function () {
+        var chgBtnId = 'qst-chg-btn-<?=$question->extId?>';
+        var block = document.getElementById('qst-ans-block-<?=$question->extId?>');
+        var isChange = <?=$question->isEmpty('answerId')?'false':'true'?>;
+
+        var inputs = block.getElementsByTagName('input');
+
+        if (!inputs.length>0)
+            return;
+
+        var form = inputs[0].form;
+
+        for (var i = 0; i < inputs.length; i++) {
+            inputs[i].addEventListener("click", function () {
+                if (isChange) {
+                    form.submit();
+
+                    for (var i = 0; i < inputs.length; i++)
+                        inputs[i].disabled = true;
+                }
+            });
+        }
+
+        if (isChange)
+            document.getElementById(chgBtnId).style.display = 'none';
+    })();
+</script>
+<?php endif; ?>

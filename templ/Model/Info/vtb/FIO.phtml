@@ -1,0 +1,132 @@
+<div class="bm-form-line">
+    <div class="bm-form-input has-tip">
+        <label class="bm-form-input-label"><?=$info->text?></label>
+    </div>
+</div>
+<div class="bm-form-line">
+    <!-- Группировка в сетку-->
+    <div class="bm-form-grid bm-form-grid--input">
+        <!-- Ячейка сетки в ширину 33%-->
+        <div class="bm-form-cell bm-form-cell--input">
+            <!-- Элемент-->
+            <div class="bm-form-input has-tip <?=$info->hasErrorSurname?'has-error':''?>">
+                <label class="bm-form-input-label" for="bm-form-input-<?=$info->extId?>-fm">Фамилия</label>
+                <div class="bm-form-input-area">
+                    <input type="text" class="bm-form-input-field js-mask-word" name="<?=$inGroup?"info[{$info->extId}][surname]":'data[surname]'?>" id="bm-form-input-<?=$info->extId?>-fm" value="<?=$info->dataSurname?>" placeholder="<?=$info->placeholder['surname']?>">
+                    <div class="bm-form-input-status bm-form-input-status--has-error">
+                        <div class="bm-form-input-status-figure">
+                            <svg class="icon icon--bm-form-close  bm-form-input-status-icon" role="img">
+                                <use xlink:href="#icon_bm-form-close"></use>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="bm-form-input-status bm-form-input-status--is-filled">
+                        <div class="bm-form-input-status-figure">
+                            <svg class="icon icon--bm-form-check  bm-form-input-status-icon" role="img">
+                                <use xlink:href="#icon_bm-form-check"></use>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="bm-form-input-error"><?=$info->errorMessageSurname?></div>
+            </div>
+        </div>
+        <!-- Ячейка сетки в ширину 33%-->
+        <div class="bm-form-cell bm-form-cell--input">
+            <!-- Элемент-->
+            <div class="bm-form-input has-tip <?=$info->hasErrorName?'has-error':''?>">
+                <label class="bm-form-input-label" for="bm-form-input-<?=$info->extId?>-nm">Имя</label>
+                <div class="bm-form-input-area">
+                    <input type="text" class="bm-form-input-field js-mask-word" name="<?=$inGroup?"info[{$info->extId}][name]":'data[name]'?>" id="bm-form-input-<?=$info->extId?>-nm" value="<?=$info->dataName?>" placeholder="<?=$info->placeholder['name']?>">
+                    <div class="bm-form-input-status bm-form-input-status--has-error">
+                        <div class="bm-form-input-status-figure">
+                            <svg class="icon icon--bm-form-close  bm-form-input-status-icon" role="img">
+                                <use xlink:href="#icon_bm-form-close"></use>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="bm-form-input-status bm-form-input-status--is-filled">
+                        <div class="bm-form-input-status-figure">
+                            <svg class="icon icon--bm-form-check  bm-form-input-status-icon" role="img">
+                                <use xlink:href="#icon_bm-form-check"></use>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="bm-form-input-error"><?=$info->errorMessageName?></div>
+            </div>
+        </div>
+        <!-- Ячейка сетки в ширину 33%-->
+        <div class="bm-form-cell bm-form-cell--input">
+            <!-- Элемент-->
+            <div class="bm-form-input has-tip <?=$info->hasErrorPatronymic?'has-error':''?>">
+                <label class="bm-form-input-label" for="bm-form-input-<?=$info->extId?>-pt">Отчество</label>
+                <div class="bm-form-input-area">
+                    <input type="text" class="bm-form-input-field js-mask-word" name="<?=$inGroup?"info[{$info->extId}][patronymic]":'data[patronymic]'?>" id="bm-form-input-<?=$info->extId?>-pt" value="<?=$info->dataPatronymic?>" placeholder="<?=$info->placeholder['patronymic']?>">
+                    <div class="bm-form-input-status bm-form-input-status--has-error">
+                        <div class="bm-form-input-status-figure">
+                            <svg class="icon icon--bm-form-close  bm-form-input-status-icon" role="img">
+                                <use xlink:href="#icon_bm-form-close"></use>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="bm-form-input-status bm-form-input-status--is-filled">
+                        <div class="bm-form-input-status-figure">
+                            <svg class="icon icon--bm-form-check  bm-form-input-status-icon" role="img">
+                                <use xlink:href="#icon_bm-form-check"></use>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="bm-form-input-error"><?=$info->errorMessagePatronymic?></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<?php if (!$inGroup) require __DIR__.'/button-group.php'; ?>
+
+<?php if ($info->hasValue): ?>
+    <script>
+        (function () {
+            try {
+                var name = {
+                    surname: document.getElementById('bm-form-input-<?=$info->extId?>-fm').value,
+                    name: document.getElementById('bm-form-input-<?=$info->extId?>-nm').value,
+                    patronymic: document.getElementById('bm-form-input-<?=$info->extId?>-pt').value
+                };
+
+                sessionStorage.setItem('info_' +<?=$info->extId?>, JSON.stringify(name));
+            } catch (e) {
+                // sessionStorage not awailable;
+            }
+        })();
+    </script>
+<?php elseif ($info->hasData): ?>
+    <script>
+        try {
+            sessionStorage.removeItem('info_'+<?=$info->extId?>);
+        } catch (e) {
+            // sessionStorage not awailable;
+        }
+    </script>
+<?php else: ?>
+    <script>
+        (function () {
+            try {
+                var value = sessionStorage.getItem('info_' +<?=$info->extId?>);
+
+                if (value!==null) {
+                    value = JSON.parse(value);
+
+                    document.getElementById('bm-form-input-<?=$info->extId?>-fm').value = value.surname;
+                    document.getElementById('bm-form-input-<?=$info->extId?>-nm').value = value.name;
+                    document.getElementById('bm-form-input-<?=$info->extId?>-pt').value = value.patronymic;
+                }                 
+            } catch (e) {
+                // sessionStorage not awailable;
+            }
+        })();
+    </script>
+<?php endif; ?>

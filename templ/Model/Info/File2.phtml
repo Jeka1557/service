@@ -1,0 +1,34 @@
+<?php
+use Model\Info\File as File;
+/** @var File $info  */
+
+?>
+<div class="entity-block">
+    <?php if ($info->hasData): ?>
+        <div class="entity-text form-group">
+            <label for="info<?=$info->extId?>"><?=$info->text?></label>
+            <p><strong>Загружен файл: <?=$info->fileName?></strong><br></p>
+            <div class="custom-file">
+                <input type="file" class="custom-file-input <?=$info->hasError?'is-invalid':''?>" id="info<?=$info->extId?>" name="<?=$info->fileWebID?>" lang="ru">
+                <label class="custom-file-label" for="info<?=$info->extId?>">Выберите файл</label>
+                <div class="invalid-feedback"><?=$info->errorMessage?></div>
+            </div>
+        </div>
+        <button  type="submit" class="btn btn-sm btn-default">Изменить</button>
+
+    <?php else: ?>
+        <div class="entity-text form-group">
+            <label for="info<?=$info->extId?>"><?=$info->text?></label>
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="info<?=$info->extId?>" name="<?=$info->fileWebID?>" lang="ru">
+                <label class="custom-file-label" for="info<?=$info->extId?>">Выберите файл</label>
+            </div>
+        </div>
+        <button  type="submit" class="btn btn-sm btn-primary">Ввести</button>
+        <?php if ($info->hasDefault): ?><button  type="submit" class="btn btn-sm btn-default">Пропустить</button><?php endif; ?>
+
+    <?php endif; ?>
+
+</div>
+<input type="hidden" name="file_web_id" value="<?=$info->fileWebID?>">
+<input type="hidden" name="info_id" value="<?=$info->extId?>">

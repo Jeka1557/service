@@ -1,0 +1,578 @@
+
+<div class="container">
+
+    <div class="row">
+        <div class="span3 bs-docs-sidebar">
+
+           <ul class="nav nav-list bs-docs-sidenav affix-top">
+                <li class="active"><a href="#using"><i class="icon-chevron-right"></i>Использование сервиса</a></li>
+                <li><a href="#algorithms"><i class="icon-chevron-right"></i>Алгоритмы</a></li>
+                <li><a href="#uid"><i class="icon-chevron-right"></i>UID</a></li>
+                <li><a href="#errors"><i class="icon-chevron-right"></i>Ошибки</a></li>
+                <li><a href="#links"><i class="icon-chevron-right"></i>Ссылки</a></li>
+                <li><a href="#algorithm-nodes"><i class="icon-chevron-right"></i>Функция получения узлов алгоритма</a></li>
+                <li><a href="#conclusion"><i class="icon-chevron-right"></i>Функция получения заключения</a></li>
+                <li><a href="#conclusion-pdf"><i class="icon-chevron-right"></i>Функция получения заключения в формате PDF</a></li>
+                <li><a href="#conclusion-docx"><i class="icon-chevron-right"></i>Функция получения заключения в формате Docx</a></li>
+                <li><a href="#text-page"><i class="icon-chevron-right"></i>Функция получения текстовой страницы</a></li>
+            </ul>
+
+        </div>
+        <div class="span9">
+            <section id="using">
+                <div class="page-header">
+                    <h1>Использование сервиса</h1>
+                </div>
+                <h4>Доступ к сервису</h4>
+                <p>Доступ к сервису осуществляется по ключу, который выдается индивидуально. После интеграции с сервисом и тестироания работы доступ также ограничивается по IP с которого будут производиться запросы к сервису.
+                Для получения ключа обращайтесь на <a href="mailto:info@%72isk%6Fve%72.r%75" target="_blank">info@riskover.ru</a>.
+                </p>
+
+                <h4>Обращение к сервису</h4>
+                <p>
+                    <ul>
+                        <li>Взаимодействие с сервисом осуществляется через вызовы его функций путем отправки HTTP-запросов на соответствующие им адреса.<br>
+                            Пример: <a href="http://<?=$serverName?>/api/algorithm_nodes" target="_blank">http://<?=$serverName?>/api/algorithm_nodes</a></li>
+                        <li>Каждой функции соответствует свой адрес (приводится в описании функции).</li>
+                        <li>Все параметры должны передаваться только методом POST (список параметров приводится в описании функции).</li>
+                        <li>Некоторые параметры передаются в формате JSON. В этом случае текстовые строки должны передаваться как Unicode Character Escape Sequence.
+                            <br>Пример:
+                            <pre>{"107":"\u041a\u043e\u043c\u043f\u0430\u043d\u0438\u044f","108":"\u0410\u0434\u0440\u0435\u0441"}</pre></li>
+                    </ul>
+                </p>
+
+                <h4>Ответ сервиса</h4>
+                <p>
+                    <ul>
+                        <li>Сервис возвращает текстовую строку представляющую объект в формате JSON.</li>
+                        <li>Набор полей объекта специфичен для каждой функции и приводится в ее описании. Объект может содержать больше полей чем указано в описании, но мы гарантируем поддержку только указанных.</li>
+                        <li>Все возвращаемые объекты содержат поле 'result' по которому можно определить корректность результата:
+                            <ul>
+                                <li>'ok' - результат корректен</li>
+                                <li>'error' - произошла ошибка</li>
+                            </ul>
+                        </li>
+                        <li>В случае ошибки поле 'message' будет содержать текст ошибки.</li>
+                    </ul>
+                </p>
+
+            </section>
+
+            <section id="algorithms">
+                <div class="page-header">
+                    <h1>Алгоритмы</h1>
+                </div>
+                <p>
+                    Сервис Riskover предназначен для выполнения содержащихся в нем алгоритмов. Алгоритмы состоят из узлов (nodes).
+                    <br><br>
+                    Узлом алгоритма может быть:
+                    <ul>
+                        <li>Вопрос (который нужно задать пользователю)</li>
+                        <li>Информация (которую нужно запросить у пользователя)</li>
+                        <li>Текстовая рекомендация (или юридический риск)</li>
+                        <li>Подготовленный документ</li>
+                        <li>Ошибка</li>
+                    </ul>
+                    <br>
+                    При выполнении алгоритма сервис выдает все "пройденные" на данный момент узлы. Пройденные узлы определяются на основе данных (ответов на вопросы) переданных сервису во входных параметрах при вызове функции.
+                    <br><br>
+                    В общем случае алгоритм работы с сервисом выглядит так:
+                    <ol>
+                        <li>Отправить запрос для получения узлов алгоритма. Сервис вернет все узлы до первого вопроса (или доп. инфо) который нужно задать пользователю.</li>
+                        <li>Задать пользователю полученный вопрос.</li>
+                        <li>Сохранить введенный ответ в своей системе.</li>
+                        <li>Отправить сервису все полученные ответы. Сервис вернет все пройденные узлы до следующего вопроса который нужно задать пользователю.</li>
+                        <li>Перейти к шагу 2. Продолжать до тех пор пока сервис не вернет метку об окончании алгоритма.</li>
+                    </ol>
+                </p>
+
+            </section>
+
+
+            <section id="uid">
+                <div class="page-header">
+                    <h1>UID</h1>
+                </div>
+                <p>
+                    Идентификатор сессии Riskover.
+                    <br><br>
+                    Каждый метод API содержит данный параметр. Он используется для оптимизации работы с сессией одного пользователя.<br>
+                    Параметр не является обязательным. Но если его не передавать то при каждом вызове сессия будет начинаться по новой, что может быть сопряжено с накладными расходами.<br>
+                    При правильной передачи Riskover использует различные оптимизации работы в рамках одной сессии.<br>
+                    Каждый метод сервиса в выходных параметрах возвращает идентификатор сесси в которой выполнялся вызов.
+                    <br><br>
+                    Правильное использование параметра:
+                    <ol>
+                        <li>Первый вызов любого метода в рамках новой сессии выполнятеся с UID=0</li>
+                        <li>Клиент сохраняет у себя UID который возвращает метод</li>
+                        <li>Дальнейшие вызовы всех медотов в рамках данной сессии выполняются с сохраненным UID</li>
+                        <li>Необходимо обновлять UID после вызова каждого метода (т.к. сервис может его изменить)</li>
+                    </ol>
+                </p>
+
+            </section>
+
+
+            <section id="errors">
+                <div class="page-header">
+                    <h1>Ошибки</h1>
+                </div>
+                <p>
+                    В процессе взаимодействия с сервисом потенциально могу возникнуть 2 типа ошибок:
+                    <h4>Ошибка в работе API</h4>
+                    Технический сбой в работе сервиса, скорее всего вызыванной возникновением какой-то внештатной ситуации. В случае возникновения сервис вернет объект в котором поле 'result'
+                            установлено в 'error', а поле 'message' будет содержать текст ошибки.
+                            Можно попробовать повторить запрос через некоторое время. Если ошибка будет повторяться необходимо связаться с нами для ее устранения.
+                    <h4>Ошибка в работе алгоритма</h4>
+                    Ошибка возникшая при выполнении алгоритма. Может быть вызвана как ошибкой в самом алгоритме, так и некорректными входными данными которые ввел пользователь.
+                    Например если в алгоритме происходит какой-то расчет, а пользователь вводит некорректное значение. В этом случае сервис вернет корректный ответ, а последним узлом алгоритма будет узел - 'ошибка'.
+                    Необходимо дать пользователю возможность исправить ситуацию, т.е. поменять введенные данные или начать алгоритм заново. Если ошибка не связана с введенными данными - обратиться к нам для помощи в решении.
+                </p>
+
+            </section>
+
+
+            <section id="links">
+                <div class="page-header">
+                    <h1>Ссылки</h1>
+                </div>
+                <p>
+                    Узлы алгоритма могут содержать текстовые данные (например текст вопроса). Эти текстовые данные могут содержать гиперссылки поясняющие различные понятия, или приводящие примеры документов.
+                    <br>
+                    Гиперссылки могут быть 3х типов:
+                    <h4>Внешний ресурс</h4>
+                    Ссылка на страницу на внешнем ресурсе. Адрес указывается полностью, начинаются с http или https.<br>
+                    Например:
+                    <pre>http://www.consultant.ru/document/cons_doc_LAW_34683/ff0b989d9cec242f2b01d05ca65a7b382f99ff10/</pre>
+
+                    <h4>Внутренняя страница</h4>
+                    Cтраница из системы Riskover. Такие ссылки имеют вид - /content/[адрес_страницы].<br>
+                    Например:
+                    <pre>/content/comments/kav_poluchit_dolg_po_ispol_listu</pre>
+                    <br>
+                    С такими ссылками можно работать следующими способами:
+                    <ul>
+                        <li>Создать на своем сайте страницу /content/, которая будет получать необходимую страницу из системы Riskover используя соответствующую функцию.</li>
+                        <li>Заменить такие ссылки, на ссылки на сам Riskover (http://riskover.ru/content/comments/kav_poluchit_dolg_po_ispol_listu).</li>
+                        <li>Убрать такие ссылки, оставив только текст.</li>
+                    </ul>
+
+                    <h4>Документ</h4>
+                    Файл документа (или картинки), из системы Riskover. Такие ссылки имеют вид - /fcache/[id документа]_[версия].[расширения].<br>
+                    Например:
+                    <pre>/fcache/2207_393.jpg</pre>
+                    <br>
+                    С такими ссылками можно работать следующими способами:
+                    <ul>
+                        <li>Создать на своем сайте страницу /fcache/, которая будет получать необходимую страницу из системы Riskover используя соответствующую функцию.</li>
+                        <li>Заменить такие ссылки, на ссылки на сам Riskover (http://riskover.ru/fcache/2207_393.jpg).</li>
+                        <li>Убрать такие ссылки, оставив только текст.</li>
+                    </ul>
+
+                </p>
+
+            </section>
+
+            <section id="algorithm-nodes">
+                <div class="page-header">
+                    <h1>Функция получения узлов алгоритма</h1>
+                </div>
+                <p>
+                    <h4>URL</h4>
+                    <a href="http://<?=$serverName?>/api/algorithm_nodes" target="_blank">http://<?=$serverName?>/api/algorithm_nodes</a>
+
+                    <h4>Входные параметры</h4>
+                    <ul>
+                        <li><b>accessKey</b> - (строка) ключ доступа к сервису</li>
+                        <li><b>algorithmId</b> - (целое) id запускаемого алгоритма</li>
+                        <li><b>contextId</b> - (целое) id контекста алгоритма, можно передавать -1, тогда будет выбран первый найденный для алгоритма контекст</li>
+                        <li><b>answers</b> - (строка JSON) массив содержащий ответы на вопросы.<br>
+                            Пример:
+                            <pre>{"2032":1,"2045":1060,"2035":1,"2089":1,"2037":2,"2048":1,"2049":1}</pre>
+                            где ключи - это id вопросов, значения - id ответов
+                        </li>
+                        <li><b>infoData</b> - (строка JSON) массив содержащий дополнительную информацию введенную пользователем.<br>
+                            Пример:
+                            <pre>{"107":"\u041a\u043e\u043c\u043f\u0430\u043d\u0438\u044f","108":"\u0410\u0434\u0440\u0435\u0441 1","109":{"surname":"\u0424\u0430\u043c\u0438\u043b\u0438\u044f","name":"\u0418\u043c\u044f","patronymic":"\u041e\u0442\u0447\u0435\u0441\u0442\u0432\u043e"}}</pre>
+                            где ключи - это id доп. инфо, значения - id ответов
+                        </li>
+                    </ul>
+                    <h4>Тест функции</h4>
+                    <form method="post" action="http://<?=$serverName?>/api/algorithm_nodes" target="_blank" class="form-horizontal">
+
+                        <div class="control-group">
+                            <label class="control-label" for="accessKey">accessKey:</label>
+                            <div class="controls">
+                                <input type="text" id="accessKey" class="input-xlarge" name="accessKey">
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="algorithmId">algorithmId:</label>
+                            <div class="controls">
+                                <input type="text" id="algorithmId" class="input-xlarge" value="422" name="algorithmId">
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label" for="contextId">contextId:</label>
+                            <div class="controls">
+                                <input type="text" id="contextId" class="input-xlarge" value="60" name="contextId">
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label" for="answers">answers:</label>
+                            <div class="controls">
+                                <textarea rows="3" name="answers" id="answers" class="input-xlarge">{"2032":1,"2045":1060,"2035":1,"2089":1,"2037":2,"2048":1,"2049":1}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label" for="infoData">infoData:</label>
+                            <div class="controls">
+                                <textarea rows="3" name="infoData" id="infoData" class="input-xlarge">{"107":"\u041a\u043e\u043c\u043f\u0430\u043d\u0438\u044f","108":"\u0410\u0434\u0440\u0435\u0441 1","109":{"surname":"\u0424\u0430\u043c\u0438\u043b\u0438\u044f","name":"\u0418\u043c\u044f","patronymic":"\u041e\u0442\u0447\u0435\u0441\u0442\u0432\u043e"},"110":"\u0410\u0434\u0440\u0435\u0441 2","111":"\u041c\u0430\u0440\u043a\u0430 \u0430\u0432\u0442\u043e","112":"4312","113":"23.05.2017","114":{"amount":"100000","currency":"1"},"115":{"amount":"20000","currency":"1"},"116":"22.05.2017","117":"3243214324134","118":"11.05.2017","119":{"amount":"200000","currency":"1"},"121":"23.05.2017","123":"12.05.2017"}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label" for="UID">UID:</label>
+                            <div class="controls">
+                                <input type="text" id="UID" class="input-xlarge" value="0" name="UID">
+                            </div>
+                        </div>
+
+
+                        <div class="control-group">
+                            <div class="controls">
+                                <button type="submit" class="btn">Отправить</button>
+                            </div>
+                        </div>
+                    </form>
+                </p>
+
+            </section>
+
+            <section id="conclusion">
+                <div class="page-header">
+                    <h1>Функция получения заключения</h1>
+                </div>
+                <p>
+                <h4>URL</h4>
+                <a href="http://<?=$serverName?>/api/conclusion" target="_blank">http://<?=$serverName?>/api/conclusion</a>
+
+                <h4>Входные параметры</h4>
+                <ul>
+                    <li><b>accessKey</b> - (строка) ключ доступа к сервису</li>
+                    <li><b>algorithmId</b> - (целое) id запускаемого алгоритма</li>
+                    <li><b>contextId</b> - (целое) id контекста алгоритма, можно передавать -1, тогда будет выбран первый найденный для алгоритма контекст</li>
+                    <li><b>answers</b> - (строка JSON) массив содержащий ответы на вопросы.<br>
+                        Пример:
+                        <pre>{"2032":1,"2045":1060,"2035":1,"2089":1,"2037":2,"2048":1,"2049":1}</pre>
+                        где ключи - это id вопросов, значения - id ответов
+                    </li>
+                    <li><b>infoData</b> - (строка JSON) массив содержащий дополнительную информацию введенную пользователем.<br>
+                        Пример:
+                        <pre>{"107":"\u041a\u043e\u043c\u043f\u0430\u043d\u0438\u044f","108":"\u0410\u0434\u0440\u0435\u0441 1","109":{"surname":"\u0424\u0430\u043c\u0438\u043b\u0438\u044f","name":"\u0418\u043c\u044f","patronymic":"\u041e\u0442\u0447\u0435\u0441\u0442\u0432\u043e"}}</pre>
+                        где ключи - это id доп. инфо, значения - id ответов
+                    </li>
+                    <li><b>conclusionId</b> - (целое) идентификатор заключения, полученного в процессе выполнения алгоритма</li>
+                </ul>
+                <h4>Тест функции</h4>
+                <form method="post" action="http://<?=$serverName?>/api/conclusion" target="_blank" class="form-horizontal">
+
+                    <div class="control-group">
+                        <label class="control-label" for="accessKey">accessKey:</label>
+                        <div class="controls">
+                            <input type="text" id="accessKey" class="input-xlarge" name="accessKey">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="algorithmId">algorithmId:</label>
+                        <div class="controls">
+                            <input type="text" id="algorithmId" class="input-xlarge" value="1148" name="algorithmId">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="contextId">contextId:</label>
+                        <div class="controls">
+                            <input type="text" id="contextId" class="input-xlarge" value="-1" name="contextId">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="answers">answers:</label>
+                        <div class="controls">
+                            <textarea rows="3" name="answers" id="answers" class="input-xlarge">{}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="infoData">infoData:</label>
+                        <div class="controls">
+                            <textarea rows="3" name="infoData" id="infoData" class="input-xlarge">{"419":"150","420":"253","421":"56"}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="conclusionId">conclusionId:</label>
+                        <div class="controls">
+                            <input type="text" id="conclusionId" class="input-xlarge" value="246" name="conclusionId">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="UID">UID:</label>
+                        <div class="controls">
+                            <input type="text" id="UID" class="input-xlarge" value="0" name="UID">
+                        </div>
+                    </div>
+
+
+                    <div class="control-group">
+                        <div class="controls">
+                            <button type="submit" class="btn">Отправить</button>
+                        </div>
+                    </div>
+                </form>
+                </p>
+
+            </section>
+
+
+            <section id="conclusion-pdf">
+                <div class="page-header">
+                    <h1>Функция получения заключения в формате PDF</h1>
+                </div>
+                <p>
+                <h4>URL</h4>
+                <a href="http://<?=$serverName?>/api/conclusion-pdf" target="_blank">http://<?=$serverName?>/api/conclusion-pdf</a>
+
+                <h4>Входные параметры</h4>
+                <ul>
+                    <li><b>accessKey</b> - (строка) ключ доступа к сервису</li>
+                    <li><b>algorithmId</b> - (целое) id запускаемого алгоритма</li>
+                    <li><b>contextId</b> - (целое) id контекста алгоритма, можно передавать -1, тогда будет выбран первый найденный для алгоритма контекст</li>
+                    <li><b>answers</b> - (строка JSON) массив содержащий ответы на вопросы.<br>
+                        Пример:
+                        <pre>{"2032":1,"2045":1060,"2035":1,"2089":1,"2037":2,"2048":1,"2049":1}</pre>
+                        где ключи - это id вопросов, значения - id ответов
+                    </li>
+                    <li><b>infoData</b> - (строка JSON) массив содержащий дополнительную информацию введенную пользователем.<br>
+                        Пример:
+                        <pre>{"107":"\u041a\u043e\u043c\u043f\u0430\u043d\u0438\u044f","108":"\u0410\u0434\u0440\u0435\u0441 1","109":{"surname":"\u0424\u0430\u043c\u0438\u043b\u0438\u044f","name":"\u0418\u043c\u044f","patronymic":"\u041e\u0442\u0447\u0435\u0441\u0442\u0432\u043e"}}</pre>
+                        где ключи - это id доп. инфо, значения - id ответов
+                    </li>
+                    <li><b>conclusionId</b> - (целое) идентификатор заключения, полученного в процессе выполнения алгоритма</li>
+                </ul>
+                <br>
+                <h4>Результат</h4>
+                    <ul>
+                        <li>В случае <b>успешного</b> завершения возвращается HTTP код ответа 200, содержимое файла отдается в виде bytestream.</li>
+                        <li>В случае <b>неуспешного</b> завершения возвращается HTTP код ответа 404. HTTP-заголовок Warning содержит текст ошибки.</li>
+                    </ul>
+                <br>
+
+                <h4>Тест функции</h4>
+                <form method="post" action="http://<?=$serverName?>/api/conclusion-pdf" target="_blank" class="form-horizontal">
+
+                    <div class="control-group">
+                        <label class="control-label" for="accessKey">accessKey:</label>
+                        <div class="controls">
+                            <input type="text" id="accessKey" class="input-xlarge" name="accessKey">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="algorithmId">algorithmId:</label>
+                        <div class="controls">
+                            <input type="text" id="algorithmId" class="input-xlarge" value="1148" name="algorithmId">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="contextId">contextId:</label>
+                        <div class="controls">
+                            <input type="text" id="contextId" class="input-xlarge" value="-1" name="contextId">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="answers">answers:</label>
+                        <div class="controls">
+                            <textarea rows="3" name="answers" id="answers" class="input-xlarge">{}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="infoData">infoData:</label>
+                        <div class="controls">
+                            <textarea rows="3" name="infoData" id="infoData" class="input-xlarge">{"419":"150","420":"253","421":"56"}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="conclusionId">conclusionId:</label>
+                        <div class="controls">
+                            <input type="text" id="conclusionId" class="input-xlarge" value="246" name="conclusionId">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="UID">UID:</label>
+                        <div class="controls">
+                            <input type="text" id="UID" class="input-xlarge" value="0" name="UID">
+                        </div>
+                    </div>
+
+
+                    <div class="control-group">
+                        <div class="controls">
+                            <button type="submit" class="btn">Отправить</button>
+                        </div>
+                    </div>
+                </form>
+                </p>
+
+            </section>
+
+
+            <section id="conclusion-docx">
+                <div class="page-header">
+                    <h1>Функция получения заключения в формате Docx</h1>
+                </div>
+                <p>
+                <h4>URL</h4>
+                <a href="http://<?=$serverName?>/api/conclusion-docx" target="_blank">http://<?=$serverName?>/api/conclusion-docx</a>
+
+                <h4>Входные параметры</h4>
+                <ul>
+                    <li><b>accessKey</b> - (строка) ключ доступа к сервису</li>
+                    <li><b>algorithmId</b> - (целое) id запускаемого алгоритма</li>
+                    <li><b>contextId</b> - (целое) id контекста алгоритма, можно передавать -1, тогда будет выбран первый найденный для алгоритма контекст</li>
+                    <li><b>answers</b> - (строка JSON) массив содержащий ответы на вопросы.<br>
+                        Пример:
+                        <pre>{"2032":1,"2045":1060,"2035":1,"2089":1,"2037":2,"2048":1,"2049":1}</pre>
+                        где ключи - это id вопросов, значения - id ответов
+                    </li>
+                    <li><b>infoData</b> - (строка JSON) массив содержащий дополнительную информацию введенную пользователем.<br>
+                        Пример:
+                        <pre>{"107":"\u041a\u043e\u043c\u043f\u0430\u043d\u0438\u044f","108":"\u0410\u0434\u0440\u0435\u0441 1","109":{"surname":"\u0424\u0430\u043c\u0438\u043b\u0438\u044f","name":"\u0418\u043c\u044f","patronymic":"\u041e\u0442\u0447\u0435\u0441\u0442\u0432\u043e"}}</pre>
+                        где ключи - это id доп. инфо, значения - id ответов
+                    </li>
+                    <li><b>conclusionId</b> - (целое) идентификатор заключения, полученного в процессе выполнения алгоритма</li>
+                </ul>
+                <br>
+                <h4>Результат</h4>
+                <ul>
+                    <li>В случае <b>успешного</b> завершения возвращается HTTP код ответа 200, содержимое файла отдается в виде bytestream.</li>
+                    <li>В случае <b>неуспешного</b> завершения возвращается HTTP код ответа 404. HTTP-заголовок Warning содержит текст ошибки.</li>
+                </ul>
+                <br>
+
+                <h4>Тест функции</h4>
+                <form method="post" action="http://<?=$serverName?>/api/conclusion-docx" target="_blank" class="form-horizontal">
+
+                    <div class="control-group">
+                        <label class="control-label" for="accessKey">accessKey:</label>
+                        <div class="controls">
+                            <input type="text" id="accessKey" class="input-xlarge" name="accessKey">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="algorithmId">algorithmId:</label>
+                        <div class="controls">
+                            <input type="text" id="algorithmId" class="input-xlarge" value="1148" name="algorithmId">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="contextId">contextId:</label>
+                        <div class="controls">
+                            <input type="text" id="contextId" class="input-xlarge" value="-1" name="contextId">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="answers">answers:</label>
+                        <div class="controls">
+                            <textarea rows="3" name="answers" id="answers" class="input-xlarge">{}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="infoData">infoData:</label>
+                        <div class="controls">
+                            <textarea rows="3" name="infoData" id="infoData" class="input-xlarge">{"419":"150","420":"253","421":"56"}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="conclusionId">conclusionId:</label>
+                        <div class="controls">
+                            <input type="text" id="conclusionId" class="input-xlarge" value="246" name="conclusionId">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="UID">UID:</label>
+                        <div class="controls">
+                            <input type="text" id="UID" class="input-xlarge" value="0" name="UID">
+                        </div>
+                    </div>
+
+
+                    <div class="control-group">
+                        <div class="controls">
+                            <button type="submit" class="btn">Отправить</button>
+                        </div>
+                    </div>
+                </form>
+                </p>
+
+            </section>
+
+            <section id="text-page">
+                <div class="page-header">
+                    <h1>Функция получения текстовой страницы</h1>
+                </div>
+                <p>
+                <h4>URL</h4>
+                <a href="http://<?=$serverName?>/api/text_page" target="_blank">http://<?=$serverName?>/api/text_page</a>
+
+                <h4>Входные параметры</h4>
+                <ul>
+                    <li><b>accessKey</b> - (строка) ключ доступа к сервису</li>
+                    <li><b>url</b> - (строка) адрес текстовой страницы в системе.<br>
+                        Пример:
+                        <pre>/content/comments/kav_poluchit_dolg_po_ispol_listu</pre>
+                    </li>
+                </ul>
+                <h4>Тест функции</h4>
+                <form method="post" action="http://<?=$serverName?>/api/text_page" target="_blank" class="form-horizontal">
+
+                    <div class="control-group">
+                        <label class="control-label" for="accessKey2">accessKey:</label>
+                        <div class="controls">
+                            <input type="text" id="accessKey2" class="input-xlarge" name="accessKey">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="url">url:</label>
+                        <div class="controls">
+                            <input type="text" id="url" class="input-xlarge" value="/content/comments/kav_poluchit_dolg_po_ispol_listu" name="url">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="controls">
+                            <button type="submit" class="btn">Отправить</button>
+                        </div>
+                    </div>
+                </form>
+                </p>
+
+            </section>
+
+
+        </div>
+    </div>

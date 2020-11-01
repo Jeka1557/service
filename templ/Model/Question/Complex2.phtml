@@ -1,0 +1,78 @@
+
+<div class="entity-block">
+    <div class="entity-text"><?=$question->text?></div>
+    <div id="qst-ans-block-<?=$question->extId?>">
+        <?php foreach ($question->answers as $answer): ?>
+        <div class="form-check ml-3">
+            <input class="form-check-input" type="checkbox" name="answer_ids[]" value="<?=$answer->id?>" id="ans-<?=$question->extId?>-<?=$answer->id?>"
+                    <?=(!$question->isEmpty('answerId') and in_array($answer->id,$question->answerId))?'checked':''?>
+            >
+            <label class="form-check-label" for="ans-<?=$question->extId?>-<?=$answer->id?>"><?=$answer->text?></label>
+        </div>
+        <?php endforeach; ?>
+    </div>
+    <div class="mt-2">
+        <?php if (!$question->isEmpty('answerId')): ?>
+            <button  type="submit" class="btn btn-sm btn-default" id="qst-chg-btn-<?=$question->extId?>">Изменить</button>
+        <?php else: ?>
+            <button  type="submit" class="btn btn-sm btn-primary">Ответить</button>
+        <?php endif; ?>
+    </div>
+</div>
+
+<input type="hidden" name="multiple_answers" value="1">
+<input type="hidden" name="question_id" value="<?=$question->extId?>">
+
+
+<script>
+    (function () {
+        var chgBtnId = 'qst-chg-btn-<?=$question->extId?>';
+        var exclAnsInputId = 'ans-<?=$question->extId?>-<?=$question->exclAnswerId?>';
+        var exclAnsId = <?=$question->exclAnswerId?>;
+        var isChange = <?=$question->isEmpty('answerId')?'false':'true'?>;
+        var block = document.getElementById('qst-ans-block-<?=$question->extId?>');
+
+        function setExclAnswer() {
+            if (!(exclAnsId>0))
+                return;
+
+            var exclChecked = document.getElementById(exclAnsInputId).checked;
+
+            if (!exclChecked)
+                return;
+
+            for (var i = 0; i < inputs.length; i++) {
+                if (inputs[i].value == exclAnsId)
+                    continue;
+
+                inputs[i].disabled = true;
+                inputs[i].checked = false;
+            }
+        }
+
+        var inputs = block.getElementsByTagName('input');
+
+        if (!inputs.length>0)
+            return;
+
+        var form = inputs[0].form;
+
+        for (var i = 0; i < inputs.length; i++) {
+            inputs[i].addEventListener("click", function () {
+                setExclAnswer();
+
+                if (isChange) {
+                    form.submit();
+
+                    for (var i = 0; i < inputs.length; i++)
+                        inputs[i].disabled = true;
+                }
+            });
+        }
+
+        if (isChange) {
+            document.getElementById(chgBtnId).style.display = 'none';
+            setExclAnswer();
+        }
+    })();
+</script>

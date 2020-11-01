@@ -1,0 +1,13 @@
+
+<h5><?=$info->text?></h5>
+
+<textarea rows="5" class="form-control input-sm <?=$info->hasError?'is-invalid':''?>" name="<?=$inGroup?"info[{$info->extId}]":'data'?>" placeholder="<?=htmlspecialchars($info->placeholder)?>"><?=$info->dataText?></textarea>
+
+<div class="invalid-feedback"><?=$info->errorMessage?></div>
+
+<?php if (!$inGroup): ?>
+<div class="mt-3">
+    <?php require __DIR__.'/button-group.php'; ?>
+</div>
+<input type="hidden" name="info_id" value="<?=$info->extId?>">
+<?php endif; ?>

@@ -1,0 +1,144 @@
+<div class="entity-block">
+    <div class="entity-text"><?=$info->text?></div>
+
+    <div id="payment-container-<?=$info->id?>"></div>
+
+    <div class="row" style="margin-top: 10px;">
+        <div class="col-sm-9" align="right">
+            <button type="button" class="btn btn-sm btn-primary" id="payment-add-button-<?=$info->id?>">Добавить выплату&nbsp;&nbsp;<i class="glyphicon glyphicon-plus"></i></button>
+        </div>
+    </div>
+
+    <br>
+    <p></p>
+    <?php if ($info->hasValue): ?>
+        <button  type="submit" class="btn btn-sm btn-default">Изменить</button>
+    <?php else: ?>
+        <button  type="submit" class="btn btn-sm btn-primary">Ввести</button>
+        <?php if (!$info->hasData and $info->hasDefault): ?>
+            <button  type="submit" class="btn btn-sm btn-default">Пропустить</button>
+        <?php endif; ?>
+    <?php endif; ?>
+</div>
+<input type="hidden" name="info_id" value="<?=$info->extId?>">
+<script type="text/javascript">
+
+    var rskPayments = {};
+
+    rskPayments.id = <?=$info->id?>;
+    rskPayments.values = <?=$items?>;
+    rskPayments.defValues = <?=$default?'true':'false'?>;
+    rskPayments.items = [];
+
+    rskPayments.drawPayment = function(index) {
+        var item = this.items[index];
+
+        item.div = document.createElement('div');
+        item.div.innerHTML =
+                '<div class="row" style="margin-top: 10px;">'+
+                    '<div class="col-sm-12">'+
+                        '<h5>'+(index+1)+'-я выплата:</h5>'+
+                    '</div>'+
+                '</div>'+
+                '<div class="form-inline row" >'+
+                    '<div class="form-group col-sm-4 col-sm-offset-1 date info-datepicker" id="payments-datepicker-'+this.id+'-'+index+'">'+
+                        '<label class="control-label" >Дата:&nbsp;</label>'+
+                        '<div class="input-group input-group-sm" style="width: 150px;">'+
+                            '<input type="text" class="form-control input-sm" name="data[date_'+index+']">'+
+                            '<span class="add-on input-group-btn"><button class="btn btn-primary"><span class="fa fa-calendar"></span></button></span>'+
+                        '</div>'+
+                    '</div>'+
+                    '<div class="form-group col-sm-4" align="right">'+
+                        '<label class="control-label" >Сумма:&nbsp;</label>'+
+                        '<input type="text" class="form-control input-sm" name="data[payment_'+index+']">'+
+                    '</div>'+
+                    '<div class="form-group col-sm-2">'+
+                        '<button type="button" class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-remove"></i></button>'+
+                    '</div>'+
+                '</div>';
+
+        this.container.appendChild(item.div);
+        item.removeBtn = item.div.childNodes[1].lastChild.firstChild;
+        item.dateInput = item.div.childNodes[1].childNodes[0].childNodes[1].firstChild;
+        item.paymentInput = item.div.childNodes[1].childNodes[1].childNodes[1];
+
+        var handler = this.removePayment.bind(this);
+        item.removeBtn.addEventListener('click', function() { handler(index); });
+    };
+
+    rskPayments.addPayment = function() {
+        var index = this.items.length;
+        this.items[index] = {};
+
+        this.drawPayment(index);
+
+        for (var i=0; i<this.items.length-1; i++) {
+            this.hideRemoveButton(i);
+        }
+
+        jQuery('#payments-datepicker-'+this.id+'-'+index).datepicker({ format: 'dd.mm.yyyy', language: 'ru', autoclose: true })
+    };
+
+    rskPayments.removePayment = function(index) {
+        this.container.removeChild(this.items[index].div);
+
+        if (this.items.length>2)
+            this.showRemoveButton(index-1);
+
+        this.items.splice(index,1);
+    };
+
+    rskPayments.hideRemoveButton = function(index) {
+        this.items[index].removeBtn.style.display = 'none';
+    };
+
+    rskPayments.showRemoveButton = function(index) {
+        this.items[index].removeBtn.style.display = 'block';
+    };
+
+
+    rskPayments.setDateValue = function(index, value, defVal) {
+        if (typeof value == "undefined")
+            return;
+
+        if (defVal)
+            this.items[index].dateInput.placeholder = value;
+        else
+            this.items[index].dateInput.value = value;
+    };
+
+    rskPayments.setPaymentValue = function(index, value, defVal) {
+        if (typeof value == "undefined")
+            return;
+
+        if (defVal)
+            this.items[index].paymentInput.placeholder = value;
+        else
+            this.items[index].paymentInput.value = value;
+    };
+
+    rskPayments.init = function() {
+        this.container = document.getElementById('payment-container-'+this.id);
+        this.addButton = document.getElementById('payment-add-button-'+this.id);
+
+        this.addPayment.bind(this);
+        this.addButton.addEventListener('click', this.addPayment.bind(this));
+
+
+        for (var i=0; i<this.values.length; i++) {
+            this.items[i] = {};
+
+            this.drawPayment(i);
+            this.setDateValue(i, this.values[i][0], this.defValues);
+            this.setPaymentValue(i, this.values[i][1], this.defValues);
+
+            this.hideRemoveButton(i);
+        }
+
+        if (this.items.length>1)
+            this.showRemoveButton(this.items.length-1);
+    }
+
+    rskPayments.init();
+
+</script>

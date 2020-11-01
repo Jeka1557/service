@@ -1,0 +1,25 @@
+<div class="entity-block">
+    <div class="entity-text"><?=$info->text?></div>
+    <div class="form-inline row" >
+        <div class="form-group col-sm-4 <?=$info->hasErrorSurname?'has-error':''?>">
+            <label class="control-label" >Фамилия:</label><br>
+            <input type="text" class="form-control input-sm" name="<?=$inGroup?"info[{$info->extId}][surname]":'data[surname]'?>"  value="<?=$info->dataSurname?>"  placeholder="<?=$info->placeholder['surname']?>" >
+            <?php if ($info->hasErrorSurname): ?><label class="control-label" for="form-input-<?=$info->extId?>"><?=$info->errorMessageSurname?></label><?php endif; ?>
+        </div>
+        <div class="form-group col-sm-4 <?=$info->hasErrorName?'has-error':''?>">
+            <label class="control-label" >Имя:</label><br>
+            <input type="text" class="form-control input-sm" name="<?=$inGroup?"info[{$info->extId}][name]":'data[name]'?>" value="<?=$info->dataName?>" placeholder="<?=$info->placeholder['name']?>" >
+            <?php if ($info->hasErrorName): ?><label class="control-label" for="form-input-<?=$info->extId?>"><?=$info->errorMessageName?></label><?php endif; ?>
+        </div>
+        <div class="form-group col-sm-4 <?=$info->hasErrorPatronymic?'has-error':''?>">
+            <label class="control-label" >Отчество:</label><br>
+            <input type="text" class="form-control input-sm" name="<?=$inGroup?"info[{$info->extId}][patronymic]":'data[patronymic]'?>"  value="<?=$info->dataPatronymic?>" placeholder="<?=$info->placeholder['patronymic']?>" >
+            <?php if ($info->hasErrorPatronymic): ?><label class="control-label" for="form-input-<?=$info->extId?>"><?=$info->errorMessagePatronymic?></label><?php endif; ?>
+        </div>
+    </div>
+    <p></p>
+    <?php if (!$inGroup): ?>
+        <?php require __DIR__.'/button-group.php'; ?>
+        <input type="hidden" name="info_id" value="<?=$info->extId?>">
+    <?php endif; ?>
+</div>

@@ -1,0 +1,4 @@
+<div class="<?=$message->isEmpty('alertClass')?'':('alert alert-'.$message->alertClass)?>">
+    <?php if (!$message->isEmpty('textHeader')): ?><h4 class="alert-heading"><?=$message->textHeader?></h4><?php endif; ?>
+    <?=$message->text?>
+</div>

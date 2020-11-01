@@ -1,0 +1,113 @@
+<?php
+use \Model\Message\Chart;
+
+$data = [];
+$labels = [];
+$bgColors = [];
+$brdColors = [];
+
+$maxValue = 0;
+
+foreach ($message->items as $item) {
+    $data[] = "'{$item['value']}'";
+    $labels[] = "'{$item['label']}'";
+    $bgColors[] = "'{$item['color']->rgba()}'";
+    $brdColors[] = "'{$item['color']->rgb()}'";
+    $maxValue = max($maxValue, $item['value']);
+}
+
+$data = implode(',', $data);
+$labels = implode(',', $labels);
+$bgColors = implode(',', $bgColors);
+$brdColors = implode(',', $brdColors);
+
+?>
+<div>
+    <?php if (!$message->isEmpty('textHeader')): ?><h4><?=$message->textHeader?></h4><?php endif; ?>
+    <?=$message->text?>
+</div>
+<div  class="mt-4 mb-4">
+    <canvas id="btm-message-<?=$message->extId?>" width="27" height="10"></canvas>
+</div>
+
+<script>
+(function () {
+    var type = '<?=$message->subtype?>';
+    var options = {
+        legend: {
+            display: true,
+            position: 'right'
+        },
+        elements: {
+            line: {
+                fill: false
+            }
+        },
+        title: {
+            display: false
+        },
+        line: {}
+    };
+
+    var data = {
+            labels: [<?=$labels?>],
+            datasets: [{
+                label: '',
+                data: [<?=$data?>],
+                fill: false,
+                backgroundColor: [<?=$bgColors?>],
+                borderColor: [<?=$brdColors?>],
+                borderWidth: 2
+            }]
+    };
+
+
+    <?php switch ($message->subtype):
+        case Chart::ST_RADAR:
+    ?>
+        options.legend.display = false;
+        options.elements.line.borderColor = '<?=$message->lineColor->rgba()?>';
+        options.scale = {
+            angleLines: {
+                display: false
+            },
+            ticks: {
+                suggestedMin: 0,
+                suggestedMax: <?=(int)$maxValue*1.2?>
+            }
+        };
+        delete data.datasets[0].borderColor;
+    <?php break; ?>
+    <?php case Chart::ST_BAR: ?>
+        options.legend.display = false;
+        options.scales = {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true,
+                    suggestedMin: 0,
+                    suggestedMax: <?=(int)$maxValue*1.2?>
+                }
+            }]
+        };
+    <?php break; ?>
+    <?php case Chart::ST_LINE: ?>
+        options.legend.display = false;
+        options.elements.line.borderColor = '<?=$message->lineColor->rgba()?>';
+        options.scales = {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true,
+                    suggestedMin: 0,
+                    suggestedMax: <?=(int)$maxValue*1.2?>
+                }
+            }]
+        };
+        delete data.datasets[0].borderColor;
+    <?php break; ?>
+    <?php endswitch; ?>
+
+
+    var ctx = document.getElementById('btm-message-<?=$message->extId?>').getContext('2d');
+    var chart = new Chart(ctx, {type: type, data: data, options: options});
+})();
+</script>

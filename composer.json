@@ -1,0 +1,16 @@
+{
+    "require": {
+        "mpdf/mpdf": ">=7.1",
+        "phpoffice/phpspreadsheet": ">=1.5",
+        "phpmailer/phpmailer": ">=6.0",
+        "phpoffice/phpword": ">=0.16.0",
+        "ext-sqlite3": "*",
+        "ext-mbstring": "*",
+        "ext-gd": "*",
+        "ext-intl": "*",
+        "ext-zip": "*",
+        "ext-iconv": "*",
+        "ext-posix": "*",
+        "ext-json": "*"
+    }
+}

@@ -1,0 +1,14 @@
+<div class="entity-block">
+    <div class="entity-text">
+        <?=$info->text?>
+    </div>
+    <div class="form-group <?=$info->hasError?'has-error':''?>">
+        <textarea rows="5" class="form-control input-sm" id="info<?=$info->extId?>" name="<?=$inGroup?"info[{$info->extId}]":'data'?>" placeholder="<?=htmlspecialchars($info->placeholder)?>"><?=$info->dataText?></textarea>
+        <?php if ($info->hasError): ?><label class="control-label" for="info<?=$info->extId?>"><?=$info->errorMessage?></label><?php endif; ?>
+    </div>
+    <p></p>
+    <?php if (!$inGroup): ?>
+        <?php require __DIR__.'/button-group.php'; ?>
+        <input type="hidden" name="info_id" value="<?=$info->extId?>">
+    <?php endif; ?>
+</div>

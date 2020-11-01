@@ -1,0 +1,460 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Jeka
+ * Date: 21.10.2018
+ * Time: 19:41
+ */
+
+
+function hasAnswer($questionId, $answerId, $loop = 0) {
+    $answerId = (int)$answerId;
+
+    if (!isset(\Infr\Template::$questionLoopBlocks[$questionId][$loop]))
+        return false;
+
+    $question = \Infr\Template::$questionLoopBlocks[$questionId][$loop];
+
+    if (is_array($question['answerId'])) {
+        if (in_array($answerId, $question['answerId']))
+            return true;
+        else
+            return false;
+
+    } elseif ((int)$question['answerId']==$answerId)
+        return true;
+    else
+        return false;
+}
+
+/**
+ * @param $questionId
+ * @param null $answerId
+ * @param int $loop
+ * @return string
+ * @throws Exception
+ */
+function answerText($questionId, $answerId = null, $loop = 0) {
+
+    if (!isset(\Infr\Template::$questionLoopBlocks[$questionId][$loop]))
+        return '';
+
+    $question = \Infr\Template::$questionLoopBlocks[$questionId][$loop];
+
+    if ((int)$answerId==0)
+        $cAnswerId = $question['answerId'];
+
+    $answer = null;
+
+    if (is_array($cAnswerId)) {
+        $answer = [];
+
+        foreach ($question['answers'] as $item) {
+            if (in_array((int)$item['id'], $cAnswerId)) {
+                $answer[] = $item['text'];
+            }
+        }
+
+        $answer = (count($answer)>0)?implode(', ', $answer):null;
+
+    } else {
+        foreach ($question['answers'] as $item) {
+            if ((int)$item['id']==$cAnswerId) {
+                $answer = $item['text'];
+                break;
+            }
+        }
+    }
+
+
+    if (!is_null($answer))
+        return \Infr\Template::prepareVar($answer);
+
+    if (is_null($answerId))
+        return '';
+    else
+        throw new \Exception('Answer not found');
+}
+
+
+function infoText($infoId, $loop = 0) {
+
+    if (!isset(\Infr\Template::$infoLoopBlocks[$infoId][$loop]))
+        return '';
+
+    return \Infr\Template::prepareVar(\Infr\Template::$infoLoopBlocks[$infoId][$loop]['dataText']);
+}
+
+
+function questionText($questionId, $loop = 0) {
+
+    if (!isset(\Infr\Template::$questionLoopBlocks[$questionId][$loop]))
+        return '';
+
+    return \Infr\Template::prepareVar(\Infr\Template::$questionLoopBlocks[$questionId][$loop]['text']);
+}
+
+
+function expressionText($expressionId, $loop = 0) {
+
+    if (!isset(\Infr\Template::$expressionLoopBlocks[$expressionId][$loop]))
+        return '';
+
+    return \Infr\Template::prepareVar(\Infr\Template::$expressionLoopBlocks[$expressionId][$loop]['textValue']);
+}
+
+
+function warningText($warningId, $loop = 0) {
+
+    if (!isset(\Infr\Template::$warningLoopBlocks[$warningId][$loop]))
+        return '';
+
+    return \Infr\Template::prepareVar(\Infr\Template::$warningLoopBlocks[$warningId][$loop]['text']);
+}
+
+function riskText($riskId, $loop = 0) {
+
+    if (!isset(\Infr\Template::$riskLoopBlocks[$riskId][$loop]))
+        return '';
+
+    return \Infr\Template::prepareVar(\Infr\Template::$riskLoopBlocks[$riskId][$loop]['text']);
+}
+
+function documentText($documentId, $loop = 0) {
+
+    if (!isset(\Infr\Template::$documentLoopBlocks[$documentId][$loop]))
+        return '';
+
+    return \Infr\Template::prepareVar(\Infr\Template::$documentLoopBlocks[$documentId][$loop]['text']);
+}
+
+function wrongDocumentText($documentId, $loop = 0) {
+
+    if (!isset(\Infr\Template::$wrongDocumentLoopBlocks[$documentId][$loop]))
+        return '';
+
+    return \Infr\Template::prepareVar(\Infr\Template::$wrongDocumentLoopBlocks[$documentId][$loop]['text']);
+}
+
+function riskReasonText($riskResonId, $loop = 0) {
+
+    if (!isset(\Infr\Template::$riskReasonLoopBlocks[$riskResonId][$loop]))
+        return '';
+
+    return \Infr\Template::prepareVar(\Infr\Template::$riskReasonLoopBlocks[$riskResonId][$loop]['text']);
+}
+
+
+function riskForReasonText($riskResonId, $loop = 0) {
+
+    if (!isset(\Infr\Template::$riskReasonLoopBlocks[$riskResonId][$loop]))
+        return '';
+
+    $riskId = \Infr\Template::$riskReasonLoopBlocks[$riskResonId][$loop]['riskGeneralId'];
+
+    if (!isset(\Infr\Template::$riskLoopBlocks[$riskId][$loop]))
+        return '';
+
+    return \Infr\Template::prepareVar(\Infr\Template::$riskLoopBlocks[$riskId][$loop]['text']);
+}
+
+
+
+function expressionValue($expressionId, $loop = 0) {
+
+    if (!isset(\Infr\Template::$expressionLoopBlocks[$expressionId][$loop]))
+        return null;
+
+    return \Infr\Template::$expressionLoopBlocks[$expressionId][$loop]['value'];
+}
+
+
+
+function infoSet($loop = 0, $algorithmId = 0) {
+    if (!isset(\Infr\Template::$infoSet[$loop]))
+        return [];
+
+    if ($algorithmId>0)
+        return \Infr\Template::algIdFilter(\Infr\Template::$infoSet[$loop], $algorithmId);
+    else
+        return \Infr\Template::$infoSet[$loop];
+}
+
+function expressionSet($loop = 0, $algorithmId = 0) {
+    if (!isset(\Infr\Template::$expressionSet[$loop]))
+        return [];
+
+    if ($algorithmId>0)
+        return \Infr\Template::algIdFilter(\Infr\Template::$expressionSet[$loop], $algorithmId);
+    else
+        return \Infr\Template::$expressionSet[$loop];
+}
+
+function warningSet($loop = 0, $algorithmId = 0) {
+    if (!isset(\Infr\Template::$warningSet[$loop]))
+        return [];
+
+    if ($algorithmId>0)
+        return \Infr\Template::algIdFilter(\Infr\Template::$warningSet[$loop], $algorithmId);
+    else
+        return \Infr\Template::$warningSet[$loop];
+}
+
+function questionSet($loop = 0, $algorithmId = 0) {
+    if (!isset(\Infr\Template::$questionSet[$loop]))
+        return [];
+
+    if ($algorithmId>0)
+        return \Infr\Template::algIdFilter(\Infr\Template::$questionSet[$loop], $algorithmId);
+    else
+        return \Infr\Template::$questionSet[$loop];
+}
+
+
+function riskSet($loop = 0, $algorithmId = 0) {
+    if (!isset(\Infr\Template::$riskSet[$loop]))
+        return [];
+
+    if ($algorithmId>0)
+        return \Infr\Template::algIdFilter(\Infr\Template::$riskSet[$loop], $algorithmId);
+    else
+        return \Infr\Template::$riskSet[$loop];
+}
+
+function riskReasonSet($riskId = null, $loop = 0, $algorithmId = 0) {
+    if (is_null($riskId)) {
+        if (!isset(\Infr\Template::$riskReasonSet[$loop]))
+            return [];
+
+        if ($algorithmId>0)
+            return \Infr\Template::algIdFilter(\Infr\Template::$riskReasonSet[$loop], $algorithmId);
+        else
+            return \Infr\Template::$riskReasonSet[$loop];
+    }
+
+    if (!isset(\Infr\Template::$riskLoopBlocks[$riskId][$loop]))
+        return [];
+
+    $result = [];
+
+    foreach (\Infr\Template::$riskLoopBlocks[$riskId][$loop]['reasons'] as $reason) {
+        $result[] = ['id' => $reason['id'], 'loop' => $loop, 'algIds' => $reason['algIds']];
+    }
+
+    if ($algorithmId>0)
+        $result = \Infr\Template::algIdFilter($result, $algorithmId);
+
+    return $result;
+}
+
+function documentSet($loop = 0, $algorithmId = 0) {
+    if (!isset(\Infr\Template::$documentSet[$loop]))
+        return [];
+
+    if ($algorithmId>0)
+        return \Infr\Template::algIdFilter(\Infr\Template::$documentSet[$loop], $algorithmId);
+    else
+        return \Infr\Template::$documentSet[$loop];
+}
+
+function wrongDocumentSet($loop = 0, $algorithmId = 0) {
+    if (!isset(\Infr\Template::$wrongDocumentSet[$loop]))
+        return [];
+
+    if ($algorithmId>0)
+        return \Infr\Template::algIdFilter(\Infr\Template::$wrongDocumentSet[$loop], $algorithmId);
+    else
+        return \Infr\Template::$wrongDocumentSet[$loop];
+}
+
+
+
+
+
+function infoLoop($infoId) {
+    if (!isset(\Infr\Template::$infoLoop[$infoId]))
+        return [];
+
+    return \Infr\Template::$infoLoop[$infoId];
+}
+
+function expressionLoop($expressionId) {
+    if (!isset(\Infr\Template::$expressionLoop[$expressionId]))
+        return [];
+
+    return \Infr\Template::$expressionLoop[$expressionId];
+}
+
+function warningLoop($warningId) {
+    if (!isset(\Infr\Template::$warningLoop[$warningId]))
+        return [];
+
+    return \Infr\Template::$warningLoop[$warningId];
+}
+
+function questionLoop($questionId) {
+    if (!isset(\Infr\Template::$questionLoop[$questionId]))
+        return [];
+
+    return \Infr\Template::$questionLoop[$questionId];
+}
+
+
+function riskLoop($riskId) {
+    if (!isset(\Infr\Template::$riskLoop[$riskId]))
+        return [];
+
+    return \Infr\Template::$riskLoop[$riskId];
+}
+
+function riskReasonLoop($riskReasonId) {
+    if (!isset(\Infr\Template::$riskReasonLoop[$riskReasonId]))
+        return [];
+
+    return \Infr\Template::$riskReasonLoop[$riskReasonId];
+}
+
+function documentLoop($documentId) {
+    if (!isset(\Infr\Template::$documentLoop[$documentId]))
+        return [];
+
+    return \Infr\Template::$documentLoop[$documentId];
+}
+
+function wrongDocumentLoop($wrongDocumentId) {
+    if (!isset(\Infr\Template::$wrongDocumentLoop[$wrongDocumentId]))
+        return [];
+
+    return \Infr\Template::$wrongDocumentLoop[$wrongDocumentId];
+}
+
+
+//////////////////// Сокращенный синтаксис ////////////////////////////
+
+function hasAns($questionId, $answerId, $loop = 0) {
+    return hasAnswer($questionId, $answerId, $loop = 0);
+}
+
+function ansTxt($questionId, $answerId = null, $loop = 0) {
+    return answerText($questionId, $answerId, $loop);
+}
+
+function infTxt($infoId, $loop = 0) {
+    return infoText($infoId, $loop);
+}
+
+function qstTxt($questionId, $loop = 0) {
+    return questionText($questionId, $loop);
+}
+
+function exprTxt($expressionId, $loop = 0) {
+    return expressionText($expressionId, $loop);
+}
+
+function warnTxt($riskId, $loop = 0) {
+    return warningText($riskId, $loop);
+}
+
+function rskTxt($riskId, $loop = 0) {
+    return riskText($riskId, $loop);
+}
+
+function docTxt($documentId, $loop = 0) {
+    return documentText($documentId, $loop);
+}
+
+function wDocTxt($documentId, $loop = 0) {
+    return wrongDocumentText($documentId, $loop);
+}
+
+function rskRsTxt($riskReasonId, $loop = 0) {
+    return riskReasonText($riskReasonId, $loop);
+}
+
+
+function exprVal($expressionId, $loop = 0) {
+    return expressionValue($expressionId, $loop);
+}
+
+
+function infSet($loop = 0, $algorithmId = 0) {
+    return infoSet($loop, $algorithmId);
+}
+
+function exprSet($loop = 0, $algorithmId = 0) {
+    return expressionSet($loop, $algorithmId);
+}
+
+function warnSet($loop = 0, $algorithmId = 0) {
+    return warningSet($loop, $algorithmId);
+}
+
+function qstSet($loop = 0, $algorithmId = 0) {
+    return questionSet($loop, $algorithmId);
+}
+
+function rskSet($loop = 0, $algorithmId = 0) {
+    return riskSet($loop, $algorithmId);
+}
+
+function rskRsSet($riskId = null, $loop = 0, $algorithmId = 0) {
+    return riskReasonSet($riskId, $loop, $algorithmId);
+}
+
+function docSet($loop = 0, $algorithmId = 0) {
+    return documentSet($loop, $algorithmId);
+}
+
+function wDocSet($loop = 0, $algorithmId = 0) {
+    return wrongDocumentSet($loop, $algorithmId);
+}
+
+
+
+function infLoop($infoId) {
+    return infoLoop($infoId);
+}
+
+function exprLoop($expressionId) {
+    return expressionLoop($expressionId);
+}
+
+function warnLoop($warningId) {
+    return warningLoop($warningId);
+}
+
+function qstLoop($questionId) {
+    return  questionLoop($questionId);
+}
+
+function rskLoop($riskId) {
+    return riskLoop($riskId);
+}
+
+function rskRsLoop($riskReasonId) {
+    return riskReasonLoop($riskReasonId);
+}
+
+function docLoop($documentId) {
+    return  documentLoop($documentId);
+}
+
+function wDocLoop($wrongDocumentId) {
+    return wrongDocumentLoop($wrongDocumentId);
+}
+
+
+
+function loadImage($infoId) {
+    \Infr\Template::$loadImages[$infoId] = \Infr\Template::$infoLoopBlocks[$infoId][0]['dataText'];
+    return "{@loadImage({$infoId})}";
+}
+
+
+//////////////////// Функции оставленные только для совместимости ////////////////////////////
+/**
+ * @deprecated
+ */
+function exprText($expressionId, $loop = 0) {
+    return expressionText($expressionId, $loop);
+}

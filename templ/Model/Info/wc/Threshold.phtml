@@ -1,0 +1,31 @@
+<h5><?=$info->text?></h5>
+
+    <div class="form-row mt-4" >
+        <div class="form-group col-md-5">
+            <label class="control-label" >Балансовая стоимость активов юр. лица:</label>
+            <input type="text" class="form-control input-sm <?=$info->hasError?'is-invalid':''?>" name="<?=$inGroup?"info[{$info->extId}][assets_cost]":'data[assets_cost]'?>" value="<?=$info->assetsCostText?>">
+            <div class="invalid-feedback"><?=$info->errorMessage?></div>
+        </div>
+    </div>
+
+    <div class="form-row" >
+        <div class="form-group col-md-5">
+            <label class="control-label" >Сумма сделки:</label>
+            <input type="text" class="form-control input-sm <?=$info->hasError?'is-invalid':''?>" name="<?=$inGroup?"info[{$info->extId}][realty_cost]":'data[realty_cost]'?>" value="<?=$info->realtyCostText?>">
+            <div class="invalid-feedback"><?=$info->errorMessage?></div>
+        </div>
+    </div>
+
+<?php if ($info->hasValue): ?>
+    <div class="alert alert-secondary" role="alert">
+        Соотношение размера сделки к стоимости активов юр. лица: <strong><?=$info->dealPercent?>%</strong>
+    </div>
+<?php endif; ?>
+
+
+<?php if (!$inGroup): ?>
+<div class="mt-1">
+    <?php require __DIR__.'/button-group.php'; ?>
+</div>
+<input type="hidden" name="info_id" value="<?=$info->extId?>">
+<?php endif; ?>

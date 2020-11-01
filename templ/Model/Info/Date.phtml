@@ -1,0 +1,32 @@
+<div class="entity-block">
+    <div class="entity-text"><?=$info->text?></div>
+    <div class="form-inline row">
+        <div class="form-group col-sm-3 date info-datepicker <?=$info->hasError?'has-error':''?>">
+            <div class="input-group input-group-sm">
+                <input type="text" class="form-control input-sm" id="info<?=$info->extId?>" autocomplete="off" name="<?=$inGroup?"info[{$info->extId}]":'data'?>" value="<?=htmlspecialchars($info->dataText)?>" placeholder="<?=htmlspecialchars($info->placeholder)?>" >
+                <span class="add-on input-group-btn">
+                    <button class="btn btn-primary"><span class="fa fa-calendar"></span>
+                    </button>
+                </span>
+            </div>
+        </div>
+        <?php if ($info->hasError): ?>
+        <div class="form-group col-sm-12 <?=$info->hasError?'has-error':''?>">
+            <label class="control-label" for="info<?=$info->extId?>"><?=$info->errorMessage?></label>
+        </div>
+        <?php endif; ?>
+    </div>
+    <p></p>
+    <?php if (!$inGroup): ?>
+        <?php require __DIR__.'/button-group.php'; ?>
+        <input type="hidden" name="info_id" value="<?=$info->extId?>">
+    <?php endif; ?>
+</div>
+
+<script type="text/javascript">
+    $('.info-datepicker').datepicker({
+        format: 'dd.mm.yyyy',
+        language: 'ru',
+        autoclose: true
+    })
+</script>

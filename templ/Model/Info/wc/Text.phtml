@@ -1,0 +1,16 @@
+<h5><?=$info->text?></h5>
+
+<input type="text" class="form-control <?=$info->jsMask?> <?=$info->hasError?'is-invalid':''?>" name="<?=$inGroup?"info[{$info->extId}]":'data'?>" value="<?=htmlspecialchars($info->dataText)?>" placeholder="<?=htmlspecialchars($info->placeholder)?>">
+
+<div class="invalid-feedback"><?=$info->errorMessage?></div>
+
+
+<?php if (!$inGroup): ?>
+<div class="mt-3">
+    <?php require __DIR__.'/button-group.php'; ?>
+</div>
+<input type="hidden" name="info_id" value="<?=$info->extId?>">
+<?php endif; ?>
+
+
+

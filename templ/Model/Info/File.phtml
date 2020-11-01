@@ -1,0 +1,33 @@
+<?php
+use Model\Info\File as File;
+/** @var File $info  */
+
+?>
+<div class="entity-block">
+    <?php if ($info->hasData): ?>
+        <div class="entity-text">
+            <p><?=$info->text?></p>
+            <p><strong>Загружен файл: <?=$info->fileName?></strong><br></p>
+            <p></p>
+            <div class="form-group <?=$info->hasError?'has-error':''?>">
+                <input type="file" name="<?=$info->fileWebID?>">
+                <?php if ($info->hasError): ?><label class="control-label" for="form-input-<?=$info->extId?>"><?=$info->errorMessage?></label><?php endif; ?>
+            </div>
+        </div>
+        <p></p>
+        <button  type="submit" class="btn btn-sm btn-default">Изменить</button>
+
+    <?php else: ?>
+        <div class="entity-text">
+            <p><?=$info->text?></p>
+            <p><input type="file" name="<?=$info->fileWebID?>"></p>
+        </div>
+        <p></p>
+        <button  type="submit" class="btn btn-sm btn-primary">Ввести</button>
+        <?php if ($info->hasDefault): ?><button  type="submit" class="btn btn-sm btn-default">Пропустить</button><?php endif; ?>
+
+    <?php endif; ?>
+
+</div>
+<input type="hidden" name="file_web_id" value="<?=$info->fileWebID?>">
+<input type="hidden" name="info_id" value="<?=$info->extId?>">

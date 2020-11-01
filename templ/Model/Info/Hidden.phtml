@@ -1,0 +1,5 @@
+<input type="hidden" name="<?=$inGroup?"info[{$info->extId}]":'data'?>" value="<?=$info->dataText?>">
+
+<?php if (!$inGroup): ?>
+    <input type="hidden" name="info_id" value="<?=$info->extId?>">
+<?php endif; ?>

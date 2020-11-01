@@ -1,0 +1,28 @@
+<div class="entity-block">
+    <div class="entity-text"><?=$info->text?></div>
+
+    <div class="form-inline row" >
+        <div class="form-group col-sm-6 <?=$info->hasError?'has-error':''?>">
+            <label class="control-label" >Балансовая стоимость активов юр. лица:</label>
+            <input type="text" class="form-control input-sm " id="info<?=$info->extId?>-assets" name="<?=$inGroup?"info[{$info->extId}][assets_cost]":'data[assets_cost]'?>" value="<?=$info->assetsCostText?>">
+            <?php if ($info->hasError): ?><label class="control-label" for="info<?=$info->extId?>-assets"><?=$info->errorMessage?></label><?php endif; ?>
+        </div>
+    </div>
+
+    <div class="form-inline row" >
+        <div class="form-group col-sm-6 <?=$info->hasError?'has-error':''?>">
+            <label class="control-label" >Сумма сделки:</label>
+            <input type="text" class="form-control input-sm" id="info<?=$info->extId?>-realty" name="<?=$inGroup?"info[{$info->extId}][realty_cost]":'data[realty_cost]'?>"  value="<?=$info->realtyCostText?>">
+            <?php if ($info->hasError): ?><label class="control-label" for="info<?=$info->extId?>-realty"><?=$info->errorMessage?></label><?php endif; ?>
+        </div>
+    </div>
+
+    <?php if ($info->hasValue): ?>
+    <p></p><p>Соотношение размера сделки к стоимости активов юр. лица: <strong><?=$info->dealPercent?>%</strong></p>
+    <?php endif; ?>
+    <p></p>
+    <?php if (!$inGroup): ?>
+        <?php require __DIR__.'/button-group.php'; ?>
+        <input type="hidden" name="info_id" value="<?=$info->extId?>">
+    <?php endif; ?>
+</div>

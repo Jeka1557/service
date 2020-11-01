@@ -1,0 +1,106 @@
+<?php
+    /** @var  Model\Question\Common $question */
+    $selAnswerId = $question->getSelectedAnswerId();
+?>
+<?php if ($inGroup): ?>
+    <div class="bm-form-line">
+        <div class="bm-form-select">
+            <label class="bm-form-select-label" for="bm-form-select-<?=$question->extId?>"><?=$question->text?></label>
+            <div class="bm-form-select-area">
+                <select class="bm-form-select-field js-select" autocomplete="off" id="bm-form-select-<?=$question->extId?>" name="answer_id[<?=$question->extId?>]" >
+                    <?php $i=0; foreach ($question->answers as $answer): ?>
+                        <option value="<?=$answer->id?>" <?=$answer->id==$selAnswerId?'selected':''?> ><?=$answer->text?></option>
+                    <?php $i++; endforeach; ?>
+                </select>
+            </div>
+        </div>
+    </div>
+<?php elseif($question->listView): ?>
+
+    <div class="bm-form-line bm-form-line--grouped bm-form-line--last">
+        <h3><?=$question->text?></h3>
+
+        <div class="bm-form-select">
+            <div class="bm-form-select-area">
+                <select class="bm-form-select-field js-select" autocomplete="off" id="bm-form-select-<?=$question->extId?>" name="answer_id" >
+                    <?php $i=0; foreach ($question->answers as $answer): ?>
+                        <option value="<?=$answer->id?>" <?=$answer->id==$selAnswerId?'selected':''?> ><?=$answer->text?></option>
+                        <?php $i++; endforeach; ?>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="bm-form-line" id="qst-chg-btn-<?=$question->extId?>">
+        <?php if (!$question->isEmpty('answerId')): ?>
+            <button type="submit" class="bm-form-btn bm-form-btn--blue">Изменить</button>
+        <?php else: ?>
+            <button type="submit" class="bm-form-btn bm-form-btn--red">Ответить</button>
+        <?php endif; ?>
+    </div>
+
+    <input type="hidden" name="question_id" value="<?=$question->extId?>">
+
+<?php else: ?>
+
+    <div class="bm-form-line bm-form-line--grouped bm-form-line--last">
+        <h3><?=$question->text?></h3>
+
+        <div class="bm-form-group-radio" id="qst-ans-block-<?=$question->extId?>">
+            <?php $i=0; foreach ($question->answers as $answer): ?>
+                <div class="bm-form-radio">
+                    <input class="bm-form-radio-field" type="radio" name="answer_id" value="<?=$answer->id?>" id="qst-ans-<?=$question->extId?>-<?=$answer->id?>" <?=$answer->id==$selAnswerId?'checked':''?> />
+                    <label class="bm-form-radio-label" for="qst-ans-<?=$question->extId?>-<?=$answer->id?>" >
+                        <div class="bm-form-radio-visual">
+                            <div class="bm-form-radio-figure"></div>
+                        </div>
+                        <div class="bm-form-radio-content"><?=$answer->text?></div>
+                    </label>
+                </div>
+            <?php $i++; endforeach; ?>
+        </div>
+    </div>
+
+    <div class="bm-form-line" id="qst-chg-btn-<?=$question->extId?>">
+        <?php if (!$question->isEmpty('answerId')): ?>
+            <button type="submit" class="bm-form-btn bm-form-btn--blue">Изменить</button>
+        <?php else: ?>
+            <button type="submit" class="bm-form-btn bm-form-btn--red">Ответить</button>
+        <?php endif; ?>
+    </div>
+
+    <input type="hidden" name="question_id" value="<?=$question->extId?>">
+
+    <script>
+        (function () {
+            var chgBtnId = 'qst-chg-btn-<?=$question->extId?>';
+            var block = document.getElementById('qst-ans-block-<?=$question->extId?>');
+            var isChange = <?=$question->isEmpty('answerId')?'false':'true'?>;
+
+            var inputs = block.getElementsByTagName('input');
+
+            if (!inputs.length>0)
+                return;
+
+            var form = inputs[0].form;
+
+            for (var i = 0; i < inputs.length; i++) {
+                inputs[i].addEventListener("click", function () {
+                    if (isChange) {
+                        form.submit();
+
+                        for (var i = 0; i < inputs.length; i++)
+                            inputs[i].disabled = true;
+                    }
+                });
+            }
+
+            if (isChange) {
+                // document.getElementById(chgBtnId).style.display = 'none';
+                var chgBtn = document.getElementById(chgBtnId);
+                chgBtn.className = chgBtn.className + ' bm-form-line--hidden';
+            }
+        })();
+    </script>
+
+<?php endif; ?>

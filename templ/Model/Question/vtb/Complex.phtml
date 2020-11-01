@@ -1,0 +1,95 @@
+
+<div class="bm-form-line bm-form-line--grouped <?=$inGroup?'':'bm-form-line--last'?>">
+    <h3><?=$question->text?></h3>
+
+    <div class="bm-form-group-checkbox" id="qst-ans-block-<?=$question->extId?>">
+
+        <?php foreach ($question->answers as $answer): ?>
+            <div class="bm-form-checkbox">
+                <input class="bm-form-checkbox-field" type="checkbox" name="<?=$inGroup?"answer_ids[{$question->extId}][]":'answer_ids[]'?>" value="<?=$answer->id?>" <?=(!$question->isEmpty('answerId') and in_array($answer->id,$question->answerId))?'checked':''?>
+                       excl="<?=$answer->excl?'true':'false'?>" id="ans-<?=$question->extId?>-<?=$answer->id?>" <?php if ($question->exclAnswerId>0): ?>onclick="checkExclAnswer<?=$question->extId?>()"<?php endif; ?> >
+                <label class="bm-form-checkbox-label" for="ans-<?=$question->extId?>-<?=$answer->id?>">
+                    <div class="bm-form-checkbox-visual">
+                        <div class="bm-form-checkbox-figure">
+                            <svg class="icon icon--bm-form-check  bm-form-checkbox-icon" role="img">
+                                <use xlink:href="#icon_bm-form-check"></use>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="bm-form-checkbox-content"><?=$answer->text?></div>
+                </label>
+            </div>
+        <?php endforeach; ?>
+
+    </div>
+</div>
+
+
+<input type="hidden" name="<?=$inGroup?"multiple_answers[{$question->extId}][]":'multiple_answers'?>" value="1">
+
+<?php if (!$inGroup): ?>
+<div class="bm-form-line" id="qst-chg-btn-<?=$question->extId?>">
+    <?php if (!$question->isEmpty('answerId')): ?>
+        <button type="submit" class="bm-form-btn bm-form-btn--blue">Изменить</button>
+    <?php else: ?>
+        <button type="submit" class="bm-form-btn bm-form-btn--red">Ответить</button>
+    <?php endif; ?>
+</div>
+
+<input type="hidden" name="question_id" value="<?=$question->extId?>">
+
+<script>
+    (function () {
+        var chgBtnId = 'qst-chg-btn-<?=$question->extId?>';
+        var exclAnsInputId = 'ans-<?=$question->extId?>-<?=$question->exclAnswerId?>';
+        var exclAnsId = <?=$question->exclAnswerId?>;
+        var isChange = <?=$question->isEmpty('answerId')?'false':'true'?>;
+        var block = document.getElementById('qst-ans-block-<?=$question->extId?>');
+
+        function setExclAnswer() {
+            if (!(exclAnsId>0))
+                return;
+
+            var exclChecked = document.getElementById(exclAnsInputId).checked;
+
+            if (!exclChecked)
+                return;
+
+            for (var i = 0; i < inputs.length; i++) {
+                if (inputs[i].value == exclAnsId)
+                    continue;
+
+                inputs[i].disabled = true;
+                inputs[i].checked = false;
+            }
+        }
+
+        var inputs = block.getElementsByTagName('input');
+
+        if (!inputs.length>0)
+            return;
+
+        var form = inputs[0].form;
+
+        for (var i = 0; i < inputs.length; i++) {
+            inputs[i].addEventListener("click", function () {
+                setExclAnswer();
+
+                if (isChange) {
+                    form.submit();
+
+                    for (var i = 0; i < inputs.length; i++)
+                        inputs[i].disabled = true;
+                }
+            });
+        }
+
+        if (isChange) {
+            // document.getElementById(chgBtnId).style.display = 'none';
+            var chgBtn = document.getElementById(chgBtnId);
+            chgBtn.className = chgBtn.className + ' bm-form-line--hidden';
+            setExclAnswer();
+        }
+    })();
+</script>
+<?php endif; ?>

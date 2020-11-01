@@ -1,0 +1,12 @@
+<h5><?=$question->text?></h5>
+
+<div class="mt-3">
+
+<?php foreach ($question->answers as $answer): ?>
+    <button class="btn <?php if (!$question->isEmpty('answerId')): ?><?=$answer->id==$question->answerId?'btn-primary':'btn-light'?><?php else: ?>btn-primary<?php endif; ?>" name="answer_id" value="<?=$answer->id?>">&nbsp;<?=$answer->header?>&nbsp;</button>
+<?php endforeach; ?>
+
+</div>
+
+
+<input type="hidden" name="question_id" value="<?=$question->extId?>">

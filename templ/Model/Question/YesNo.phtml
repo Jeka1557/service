@@ -1,0 +1,10 @@
+<div class="entity-block">
+    <div class="entity-text"><?=$question->text?></div>
+    <div>
+        <?php foreach ($question->answers as $answer): ?>
+            <button class="btn btn-sm <?php if (!$question->isEmpty('answerId')): ?><?=$answer->id==$question->answerId?'btn-info':'btn-default'?><?php else: ?>btn-primary<?php endif; ?>" name="answer_id" value="<?=$answer->id?>">&nbsp;<?=$answer->header?>&nbsp;</button>
+        <?php endforeach; ?>
+    </div>
+</div>
+
+<input type="hidden" name="question_id" value="<?=$question->extId?>">

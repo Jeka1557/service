@@ -1,0 +1,30 @@
+<?php
+use Model\Info\File as File;
+/** @var File $info  */
+
+?>
+
+<h5><?=$info->text?></h5>
+
+<?php if ($info->hasData): ?>
+<div class="alert alert-light" role="alert">
+    Загружен файл: <a class="alert-link"><?=$info->fileName?></a>
+</div>
+<?php endif; ?>
+
+<div class="form-group">
+    <div class="custom-file col-md-4">
+        <input type="file" class="custom-file-input <?=$info->hasError?'is-invalid':''?>" lang="ru" name="<?=$info->fileWebID?>" id="file-<?=$info->fileWebID?>">
+        <label class="custom-file-label" for="file-<?=$info->fileWebID?>">Выберите файл</label>
+        <div class="invalid-feedback"><?=$info->errorMessage?></div>
+    </div>
+</div>
+
+<?php if (!$inGroup): ?>
+<div class="mt-3">
+    <?php require __DIR__.'/button-group.php'; ?>
+</div>
+
+<input type="hidden" name="file_web_id" value="<?=$info->fileWebID?>">
+<input type="hidden" name="info_id" value="<?=$info->extId?>">
+<?php endif; ?>

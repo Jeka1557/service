@@ -1,0 +1,39 @@
+<h6>AlgorithmId:</h6>
+<pre>
+    <?=$algorithmId?>
+</pre>
+
+<h6>ContextId:</h6>
+<pre>
+    <?=$contextId?>
+</pre>
+
+<h6>Answers:</h6>
+<pre>
+    <?=$answers?>
+</pre>
+
+<h6>infoData:</h6>
+<pre>
+    <?=$infoData?>
+</pre>
+
+<?php foreach ($conclusions as $conclusion): ?>
+
+<h6>conclusionId (<?=$conclusion['header']?>):</h6>
+<pre>
+    <?=$conclusion['id']?>
+</pre>
+
+
+<?php endforeach; ?>
+
+
+
+<br>
+<br>
+
+<pre><?=$log?></pre>
+
+
+

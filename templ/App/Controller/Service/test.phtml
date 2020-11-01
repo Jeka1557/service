@@ -1,0 +1,67 @@
+<h1>Вопросы/Заключение</h1>
+<form action="/service" method="GET">
+    <b>Action:</b>
+    <select name="action" onchange="this.form.submit();">
+        <option value="question_list" {if $action=='question_list'}selected{/if}>Список вопросов</option>
+        <option value="conclusion" {if $action=='conclusion'}selected{/if}>Заключение</option>
+        <option value="node_list" {if $action=='node_list'}selected{/if}>Список узлов</option>
+        <option value="conclusion_text" {if $action=='conclusion_text'}selected{/if}>Текст заключения</option>
+    </select>
+</form>
+
+<form action="/service/{$action}" method="POST" target="_blank">
+    <b>Algorithm Id:</b><input type="text" name="algorithmId">
+    <b>Context Id:</b><input type="text" name="contextId">
+    <b>Link Type:</b><input type="text" name="linkType">
+    <b>Conclusion Id:</b><input type="text" name="conclusionId">
+    <b>UID:</b><input type="text" name="UID">
+    <br>
+    <b>Answers:</b><br>
+    <textarea rows="15" cols="50" name="answers"></textarea>
+    <br>
+    <br>
+    <b>Info Data:</b><br>
+    <textarea rows="15" cols="50" name="infoData"></textarea>
+    <br>
+    <input type="submit" value=">>>">
+</form>
+
+
+
+<h1>Текстовая страница</h1>
+
+<form action="/service/text_page" method="POST" target="_blank">
+    <b>id:</b><input type="text" name="id">
+    <br>
+    <b>url:</b><input type="text" name="url">
+    <br>
+    <b>Link Type:</b><input type="text" name="linkType">
+    <br>
+    <input type="submit" value=">>>">
+</form>
+
+
+<h1>Текстовое оглавление</h1>
+
+<form action="/service/text_index" method="POST" target="_blank">
+    <b>url:</b><input type="text" name="url">
+    <br>
+    <input type="submit" value=">>>">
+</form>
+
+
+<h1>Текстовые хлебные крошки</h1>
+
+<form action="/service/text_breadcrumbs" method="POST" target="_blank">
+    <b>url:</b><input type="text" name="url">
+    <br>
+    <input type="submit" value=">>>">
+</form>
+
+
+<h1>Текстовое оглавление полное</h1>
+
+<form action="/service/text_full_index" method="POST" target="_blank">
+
+    <input type="submit" value=">>>">
+</form>

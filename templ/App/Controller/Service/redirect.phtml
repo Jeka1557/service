@@ -1,0 +1,37 @@
+
+    <div class="row-fluid">
+        <div class="span8 offset2">
+            <br>
+            <h1>Service request</h1>
+            <br>
+            <textarea id="json_data" rows="10" class="span12">
+
+            </textarea><br>
+            <button class="btn btn-default" id="request_btn">Запрос</button>
+        </div>
+    </div>
+    <script>
+
+        jQuery('#request_btn').click(function(event){
+
+            var jsonObj = JSON.parse(jQuery('#json_data').val());
+
+            var newForm = jQuery('<form>', {
+                'action': jsonObj.url,
+                'target': '_blank',
+                'method': 'POST'
+            });
+
+            for (var i in jsonObj.post) {
+
+                newForm.append(jQuery('<input>', {
+                    'name': i,
+                    'value': jsonObj.post[i],
+                    'type': 'hidden'
+                }));
+            }
+
+            $(document.body).append(newForm);
+            newForm.submit();
+        });
+    </script>

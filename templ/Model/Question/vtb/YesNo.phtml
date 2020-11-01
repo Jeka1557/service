@@ -1,0 +1,26 @@
+
+<div class="bm-form-line bm-form-line--grouped <?=$inGroup?'':'bm-form-line--last'?>">
+    <h3><?=$question->text?></h3>
+
+    <?php if (!$inGroup): ?>
+        <div class="bm-form-consents-btns">
+            <?php foreach ($question->answers as $answer): ?>
+                <button class="bm-form-btn <?php if (!$question->isEmpty('answerId')): ?><?=$answer->id==$question->answerId?'bm-form-btn--blue':'bm-form-btn--white'?><?php else: ?>bm-form-btn--blue<?php endif; ?>" name="answer_id" value="<?=$answer->id?>"><?=$answer->header?></button>
+            <?php endforeach; ?>
+        </div>
+    <?php else: ?>
+        <div class="bm-form-group-consents">
+            <?php foreach ($question->answers as $answer): ?>
+                <div class="bm-form-consent js-consent">
+                    <input class="bm-form-consent-field" type="radio" name="answer_id[<?=$question->extId?>]" id="bm-form-show-consent-<?=$question->extId?>-<?=$answer->id?>" value="<?=$answer->id?>" <?php if (!$question->isEmpty('answerId')): ?><?=$answer->id==$question->answerId?'checked':''?><?php endif; ?>>
+                    <label class="bm-form-consent-label" for="bm-form-show-consent-<?=$question->extId?>-<?=$answer->id?>"><?=$answer->header?></label>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+</div>
+
+<?php if (!$inGroup): ?>
+    <input type="hidden" name="question_id" value="<?=$question->extId?>">
+<?php endif; ?>
+

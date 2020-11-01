@@ -1,0 +1,27 @@
+<div class="bm-form-line">
+    <div class="bm-form-input has-tip <?=$info->hasError?'has-error':''?>">
+        <label class="bm-form-input-label" for="bm-form-input-<?=$info->extId?>"><?=$info->text?></label>
+        <div class="bm-form-input-area">
+            <input class="bm-form-input-field <?=$info->jsMask?>" autocomplete="off" type="text" name="<?=$inGroup?"info[{$info->extId}]":'data'?>" id="bm-form-input-<?=$info->extId?>" value="<?=htmlspecialchars($info->dataText)?>" placeholder="<?=htmlspecialchars($info->placeholder)?>" >
+            <div class="bm-form-input-status bm-form-input-status--has-error">
+                <div class="bm-form-input-status-figure">
+                    <svg class="icon icon--bm-form-close  bm-form-input-status-icon" role="img">
+                        <use xlink:href="#icon_bm-form-close"></use>
+                    </svg>
+                </div>
+            </div>
+            <div class="bm-form-input-status bm-form-input-status--is-filled">
+                <div class="bm-form-input-status-figure">
+                    <svg class="icon icon--bm-form-check  bm-form-input-status-icon" role="img">
+                        <use xlink:href="#icon_bm-form-check"></use>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <div class="bm-form-input-error"><?=$info->errorMessage?></div>
+    </div>
+</div>
+
+<?php if (!$inGroup) require __DIR__.'/button-group.php'; ?>
+
+<?php if ($info->toLocalStorage) require __DIR__.'/../local-storage.php'; ?>

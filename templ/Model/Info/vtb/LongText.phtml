@@ -1,0 +1,25 @@
+<div class="bm-form-line">
+    <div class="bm-form-input <?=$info->hasError?'has-error':''?>">
+        <label class="bm-form-input-label" for="bm-form-textarea-<?=$info->extId?>"><?=$info->text?></label>
+        <div class="bm-form-input-area">
+            <textarea class="bm-form-input-field bm-form-input-field--textarea" id="bm-form-textarea-<?=$info->extId?>" rows="5" name="<?=$inGroup?"info[{$info->extId}]":'data'?>" placeholder="<?=htmlspecialchars($info->placeholder)?>"><?=$info->dataText?></textarea>
+            <div class="bm-form-input-status bm-form-input-status--has-error">
+                <div class="bm-form-input-status-figure">
+                    <svg class="icon icon--bm-form-close  bm-form-input-status-icon" role="img">
+                        <use xlink:href="#icon_bm-form-close"></use>
+                    </svg>
+                </div>
+            </div>
+            <div class="bm-form-input-status bm-form-input-status--is-filled">
+                <div class="bm-form-input-status-figure">
+                    <svg class="icon icon--bm-form-check  bm-form-input-status-icon" role="img">
+                        <use xlink:href="#icon_bm-form-check"></use>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <div class="bm-form-input-error"><?=$info->errorMessage?></div>
+    </div>
+</div>
+
+<?php if (!$inGroup) require __DIR__.'/button-group.php'; ?>

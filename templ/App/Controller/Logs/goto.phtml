@@ -1,0 +1,16 @@
+UID: <input type="text" id="uid">
+<br>
+<button class="btn btn-primary" id="goto-button">Перейти</button>
+
+<script type="text/javascript">
+
+    $('#goto-button').click(function () {
+        var uid = $('#uid').val();
+        var now = new Date();
+
+        var link = '/logs/file?dir=<?=date('Y-m-d')?>&name='+uid+'.log';
+
+        window.location = link;
+    });
+
+</script>
